@@ -1,0 +1,21 @@
+package com.demo.zhulong.controller;
+
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+/**
+ * @Description: --------------------------------------
+ * @ClassName: HelloWorldController.java
+ * @Date: 2019/9/17 20:14
+ * @SoftWare: IntelliJ IDEA
+ * --------------------------------------
+ * @Author: lixj
+ * @Contact: lixj_zj@163.com
+ **/
+@RestController
+public class HelloWorldController {
+    @RequestMapping("/hello")
+    public String index(){
+        return "Hello World";
+    }
+}
