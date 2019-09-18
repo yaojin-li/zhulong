@@ -1,4 +1,4 @@
-package com.demo.zhulong.util;
+package com.demo.zhulong.utils;
 
 import org.apache.commons.lang3.StringUtils;
 

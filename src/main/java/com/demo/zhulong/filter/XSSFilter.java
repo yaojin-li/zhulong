@@ -1,6 +1,6 @@
 package com.demo.zhulong.filter;
 
-import com.demo.zhulong.util.StringUtil;
+import com.demo.zhulong.utils.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
