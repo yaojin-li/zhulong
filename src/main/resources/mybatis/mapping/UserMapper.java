@@ -1,8 +1,8 @@
 package mybatis.mapping;
 
 import java.util.List;
-import mybatis.po.User;
-import mybatis.po.UserExample;
+import mybatis.vo.User;
+import mybatis.vo.UserExample;
 import org.apache.ibatis.annotations.Param;
 
 public interface UserMapper {
