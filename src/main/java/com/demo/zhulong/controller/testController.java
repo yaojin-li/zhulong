@@ -14,8 +14,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
  **/
 @Controller
 public class testController {
+
+    @RequestMapping(value = "/index")
+    public String index() {
+        return "index.html";
+    }
+
     @RequestMapping(value = "/test")
     public String testThymeleaf() {
-        return "test.html";
+        return "base/baseModel.html";
     }
 }

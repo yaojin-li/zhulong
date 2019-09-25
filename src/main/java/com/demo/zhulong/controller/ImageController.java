@@ -404,65 +404,65 @@ public class ImageController {
      * @Date: 2017年8月29日 上午10:21:55
      * @return: ModelAndView
      */
-    @ResponseBody
-    @RequestMapping(value = "changeImageInfo", method = {RequestMethod.GET, RequestMethod.POST})
-    public ModelAndView changeImageInfo(String file_changed, HttpServletRequest request, HttpServletResponse response)
-            throws Exception {
-
-        System.out.println("changeImageInfo::");
-
-        String changeData = request.getParameter("file_changed");
-
-        String message = "";
-
-        try {
-
-            // json字符串转JSONArray对象
-            net.sf.json.JSONArray jsonArray = net.sf.json.JSONArray.fromObject(changeData);
-
-            String[] aStrings = new String[jsonArray.size()];
-
-            for (int i = 0; i < jsonArray.size(); i++) {
-                aStrings[i] = jsonArray.get(i).toString();
-            }
-
-            for (int i = 0; i < aStrings.length; i++) {
-                System.out.println(i + aStrings[i]);
-            }
-
-            JSONObject jsonObject = new JSONObject();
-
-
-            jsonObject.put("id", aStrings[0]);
-            jsonObject.put("new_title", aStrings[1]);
-            jsonObject.put("description", aStrings[2]);
-            jsonObject.put("remark", aStrings[3]);
-            jsonObject.put("modify_time", new Timestamp(System.currentTimeMillis()));
-
-            ImageCustom imageCustom = JSON.toJavaObject(jsonObject, ImageCustom.class);
-
-            LOGGER.info(JSON.toJSONStringWithDateFormat(imageCustom, "yyyy-MM-dd HH:mm:ss"));
-
-            //更新数据
-            imageService.updateImage(imageCustom);
-
-            message = "修改成功";
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            request.setAttribute("message", "修改失败");
-            request.getRequestDispatcher("/WEB-INF/jsp/example/message.jsp").forward(request, response);
-        }
-
-        ModelAndView modelAndView = new ModelAndView();
-
-        modelAndView.addObject("message", message);
-        modelAndView.setViewName("example/imgFileList");
-
-        return modelAndView;
-
-    }
-
+//    @ResponseBody
+//    @RequestMapping(value = "changeImageInfo", method = {RequestMethod.GET, RequestMethod.POST})
+//    public ModelAndView changeImageInfo(String file_changed, HttpServletRequest request, HttpServletResponse response)
+//            throws Exception {
+//
+//        System.out.println("changeImageInfo::");
+//
+//        String changeData = request.getParameter("file_changed");
+//
+//        String message = "";
+//
+//        try {
+//
+//            // json字符串转JSONArray对象
+//            net.sf.json.JSONArray jsonArray = net.sf.json.JSONArray.fromObject(changeData);
+//
+//            String[] aStrings = new String[jsonArray.size()];
+//
+//            for (int i = 0; i < jsonArray.size(); i++) {
+//                aStrings[i] = jsonArray.get(i).toString();
+//            }
+//
+//            for (int i = 0; i < aStrings.length; i++) {
+//                System.out.println(i + aStrings[i]);
+//            }
+//
+//            JSONObject jsonObject = new JSONObject();
+//
+//
+//            jsonObject.put("id", aStrings[0]);
+//            jsonObject.put("new_title", aStrings[1]);
+//            jsonObject.put("description", aStrings[2]);
+//            jsonObject.put("remark", aStrings[3]);
+//            jsonObject.put("modify_time", new Timestamp(System.currentTimeMillis()));
+//
+//            ImageCustom imageCustom = JSON.toJavaObject(jsonObject, ImageCustom.class);
+//
+//            LOGGER.info(JSON.toJSONStringWithDateFormat(imageCustom, "yyyy-MM-dd HH:mm:ss"));
+//
+//            //更新数据
+//            imageService.updateImage(imageCustom);
+//
+//            message = "修改成功";
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            request.setAttribute("message", "修改失败");
+//            request.getRequestDispatcher("/WEB-INF/jsp/example/message.jsp").forward(request, response);
+//        }
+//
+//        ModelAndView modelAndView = new ModelAndView();
+//
+//        modelAndView.addObject("message", message);
+//        modelAndView.setViewName("example/imgFileList");
+//
+//        return modelAndView;
+//
+//    }
+//
 
 }
 	

@@ -1,6 +1,6 @@
 package com.demo.zhulong.dao;
 
-import com.entity.Image;
+import com.demo.zhulong.entity.Image;
 
 public interface ImageMapper {
     //-------------------------

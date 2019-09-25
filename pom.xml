@@ -138,11 +138,6 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-
             <!--开发环境调试-->
             <plugin>
                 <groupId>org.springframework.boot</groupId>

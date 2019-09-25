@@ -43,7 +43,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
-import com.constants.HDFSConstants;
+import com.demo.zhulong.common.HDFSConstants;
 
 /**
  * @Author: Administrator
