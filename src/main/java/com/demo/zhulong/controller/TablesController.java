@@ -5,28 +5,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * @Description: --------------------------------------
- * @ClassName: testController.java
- * @Date: 2019/9/21 18:50
+ * @ClassName: TablesController.java
+ * @Date: 2019/9/26 19:49
  * @SoftWare: IntelliJ IDEA
  * --------------------------------------
  * @Author: lixj
  * @Contact: lixj_zj@163.com
  **/
 @Controller
-public class testController {
-
-    @RequestMapping(value = "/index")
+public class TablesController {
+    @RequestMapping(value = "/tables")
     public String index() {
-        return "index.html";
-    }
-
-    @RequestMapping(value = "/test")
-    public String testThymeleaf() {
-        return "test.html";
-    }
-
-    @RequestMapping(value = "/404")
-    public String test404(){
-        return "common/404.html";
+        return "tables.html";
     }
 }
