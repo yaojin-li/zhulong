@@ -1,10 +1,14 @@
-package com.demo.zhulong.entity;
+package com.demo.zhulong.base.beans;
 
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Date;
 
-public class Image {
+@Table(name = "image")
+public class ImageVo {
 	//  ----------------------------------------------------------
-	
+
+    @Id
 	private Long id;
 
 	private String title;

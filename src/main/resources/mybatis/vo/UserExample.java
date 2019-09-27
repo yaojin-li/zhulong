@@ -1,4 +1,4 @@
-package mybatis.po;
+package mybatis.vo;
 
 import java.util.ArrayList;
 import java.util.List;

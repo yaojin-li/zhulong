@@ -27,6 +27,16 @@ public class testController {
 
     @RequestMapping(value = "/404")
     public String test404(){
-        return "common/404.html";
+        return "404.html";
+    }
+
+    @RequestMapping(value = "/buttons")
+    public String testButton(){
+        return "buttons.html";
+    }
+
+    @RequestMapping(value = "/cards")
+    public String testCards(){
+        return "cards.html";
     }
 }
