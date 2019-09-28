@@ -25,7 +25,7 @@
 
         <!--mysql-->
         <jdbcConnection driverClass="com.mysql.jdbc.Driver"
-                        connectionURL="jdbc:mysql://localhost:3306/demo?useUnicode=true&amp;characterEncoding=UTF8&amp;useSSL=false"
+                        connectionURL="jdbc:mysql://localhost:3306/zhulong?useUnicode=true&amp;characterEncoding=UTF8&amp;useSSL=false"
                         userId="root"
                         password="123456789">
         </jdbcConnection>
@@ -63,7 +63,7 @@
             <property name="enableSubPackages" value="false" />
         </javaClientGenerator>
         <!-- 指定数据库表 -->
-        <table schema="" tableName="user"
+        <table schema="" tableName="images"
                enableCountByExample="false" enableUpdateByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false"
                selectByExampleQueryId="false">
