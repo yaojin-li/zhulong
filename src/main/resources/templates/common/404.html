@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+  <!-- ############################## head ################################# -->
+  <head th:replace="/base/commons.html::head"></head>
+
+  <body id="page-top">
+    <div id="wrapper">
+
+      <!-- ############################## sidebar ################################# -->
+      <ul th:replace="/base/commons.html::sidebar"></ul>
+
+      <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content">
+          <!-- ############################## topbar ############################## -->
+          <nav th:replace="/base/commons.html::topbar"></nav>
+
+          <!-- 404 Error Text -->
+          <div class="container-fluid">
+            <div class="text-center">
+              <div class="error mx-auto" data-text="404">404</div>
+              <p class="lead text-gray-800 mb-5">Page Not Found</p>
+              <p class="text-gray-500 mb-0">It looks like you found a glitch in the matrix...</p>
+              <a href="/index">&larr; Back to Dashboard</a>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ############################## footer ############################## -->
+        <footer th:replace="/base/commons.html::footer"></footer>
+      </div>
+    </div>
+
+    <!-- ############################## 滚动到顶端 ############################## -->
+    <a th:replace="/base/commons.html::scroll_to_top"></a>
+
+    <!-- ############################## 推出弹框 ############################## -->
+    <div th:replace="/base/commons.html::logout_modal"></div>
+
+    <!-- ############################## 公共部分js ############################## -->
+    <span th:replace="/base/commons.html::base_js"></span>
+
+  </body>
+</html>

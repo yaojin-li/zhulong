@@ -1,36 +1,44 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-    <!--复用head代码-->
-    <head th:replace="/base/head.html::head"></head>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+    <!-- ############################## head ################################# -->
+    <head th:replace="/base/commons.html::head"></head>
+
     <body id="page-top">
-        <!-- Page Wrapper -->
         <div id="wrapper">
-            <!-- Sidebar 左侧导航 -->
-            <ul th:replace="/base/nav_left.html::nav_left"></ul>
+
+            <!-- ############################## sidebar ################################# -->
+            <ul th:replace="/base/commons.html::sidebar"></ul>
+
             <div id="content-wrapper" class="d-flex flex-column">
                 <div id="content">
-                    <!--头部导航-->
-                    <nav th:replace="/base/nav_top.html::nav_top"></nav>
+                    <!-- ############################## topbar ############################## -->
+                    <nav th:replace="/base/commons.html::topbar"></nav>
 
-                    <!--页面内容-->
+
+                    <!-- ///////////////////////////// 新增内容  ///////////////////////////// -->
                     <div class="container-fluid">
-                    <!--新加内容-->
-
-
-
-
+                        <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                            <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+                        </div>
                     </div>
 
+
                 </div>
-                <!--Footer-->
-                <footer th:replace="/base/footer.html::footer"></footer>
+
+                <!-- ############################## footer ############################## -->
+                <footer th:replace="/base/commons.html::footer"></footer>
             </div>
         </div>
-        <!--点击回到顶端-->
-        <a th:replace="/base/scroll_top.html::scroll_top"></a>
 
-        <!--退出登录弹框-->
-        <div th:replace="/base/logout_modal.html::logout_modal"></div>
+        <!-- ############################## 滚动到顶端 ############################## -->
+        <a th:replace="/base/commons.html::scroll_to_top"></a>
+
+        <!-- ############################## 推出弹框 ############################## -->
+        <div th:replace="/base/commons.html::logout_modal"></div>
+
+        <!-- ############################## 公共部分js ############################## -->
+        <span th:replace="/base/commons.html::base_js"></span>
 
     </body>
 </html>
