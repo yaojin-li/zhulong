@@ -1,12 +1,13 @@
-<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="nav_left"
+<div>
+<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion"
     xmlns:th="http://www.thymeleaf.org" th:fragment="nav_left">
 
-    <script type="text/javascript">
-        try {
-            ace.settings.check('nav_left', 'fixed')
-        } catch (e) {
-        }
-    </script>
+    <!--<script type="text/javascript">-->
+        <!--try {-->
+            <!--ace.settings.check('nav_left', 'fixed')-->
+        <!--} catch (e) {-->
+        <!--}-->
+    <!--</script>-->
 
     <!-- Sidebar - Brand -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/index">
@@ -113,6 +114,13 @@
             <span>Tables</span></a>
     </li>
 
+    <!-- Nav Item - Tables -->
+    <li class="nav-item">
+        <a class="nav-link" href="/images">
+            <i class="fas fa-fw fa-table"></i>
+            <span>Images 测试</span></a>
+    </li>
+
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">
 
@@ -122,4 +130,4 @@
     </div>
 
 </ul>
-
+</div>
