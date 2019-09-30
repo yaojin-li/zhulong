@@ -1,7 +1,7 @@
 package com.demo.zhulong.common.contants;
 
 /**
- * @Description: 应用常亮接口
+ * @Description: 应用常量接口
  * --------------------------------------
  * @ClassName: Constants.java
  * @Date: 2019/9/30 18:04

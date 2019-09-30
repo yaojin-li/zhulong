@@ -1,7 +1,7 @@
 package com.demo.zhulong.service;
 
-import com.demo.zhulong.base.beans.Images;
-import com.demo.zhulong.base.dao.ImagesMapper;
+import com.demo.zhulong.base.beans.Videos;
+import com.demo.zhulong.base.dao.VideosMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -10,25 +10,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @Description: ImageService
+ * @Description: VideoService
  * --------------------------------------
- * @ClassName: ImageService.java
- * @Date: 2019/9/30 20:19
+ * @ClassName: VideoService.java
+ * @Date: 2019/9/30 23:19
  * @SoftWare: IntelliJ IDEA
  * --------------------------------------
  * @Author: lixj
  * @Contact: lixj_zj@163.com
  **/
 @Service
-public class ImageService {
+public class VideoService {
 
     @Autowired
     @Lazy
-    private ImagesMapper imagesMapper;
+    private VideosMapper videosMapper;
 
-    public List<Images> selectAll() throws Exception {
-        List<Images> result = new ArrayList<>();
-        result.add(imagesMapper.selectByPrimaryKey(1));
+    public List<Videos> selectAll() throws Exception {
+        List<Videos> result = new ArrayList<>();
+        result.add(videosMapper.selectByPrimaryKey(1));
         return result;
     }
 

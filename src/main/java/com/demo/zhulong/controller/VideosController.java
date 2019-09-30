@@ -1,7 +1,7 @@
 package com.demo.zhulong.controller;
 
-import com.demo.zhulong.base.beans.Images;
-import com.demo.zhulong.service.ImageService;
+import com.demo.zhulong.base.beans.Videos;
+import com.demo.zhulong.service.VideoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,24 +12,24 @@ import java.util.List;
 
 /**
  * @Description: --------------------------------------
- * @ClassName: ImagesController.java
- * @Date: 2019/9/28 23:16
+ * @ClassName: VideosController.java
+ * @Date: 2019/9/30 23:36
  * @SoftWare: IntelliJ IDEA
  * --------------------------------------
  * @Author: lixj
  * @Contact: lixj_zj@163.com
  **/
 @Controller
-@RequestMapping(value = "/imagesController")
-public class ImagesController {
+@RequestMapping(value = "/videoController")
+public class VideosController {
 
     @Autowired
-    public ImageService imageService;
+    public VideoService videoService;
 
-    @RequestMapping(value = "/queryImage",produces = "application/json;charset=utf-8")
+    @RequestMapping(value = "/queryVideo",produces = "application/json;charset=utf-8")
     @ResponseBody
     public ModelAndView query() throws Exception{
-        List<Images> imageList = imageService.selectAll();
+        List<Videos> imageList = videoService.selectAll();
         System.out.println(imageList);
         ModelAndView modelAndView = new ModelAndView();
 

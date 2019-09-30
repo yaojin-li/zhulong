@@ -24,4 +24,15 @@ public class CommonController {
     public String test404(){
         return "common/404.html";
     }
+
+    @RequestMapping(value = "/buttons")
+    public String testButton(){
+        return "buttons.html";
+    }
+
+    @RequestMapping(value = "/cards")
+    public String testCards(){
+        return "cards.html";
+    }
+
 }
