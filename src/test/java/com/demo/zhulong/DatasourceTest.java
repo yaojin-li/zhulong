@@ -1,22 +1,14 @@
 package com.demo.zhulong;
 
-import com.alibaba.fastjson.JSON;
 import com.demo.zhulong.config.dataSource.DruidDBConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.sql.DataSource;
-import java.util.List;
 
 /**
  * @Description: --------------------------------------
@@ -27,11 +19,8 @@ import java.util.List;
  * @Author: lixj
  * @Contact: lixj_zj@163.com
  **/
-
 @RunWith(SpringRunner.class)
 @SpringBootTest
-//@MapperScan(basePackages = {"com.demo.zhulong.base.dao"})
-//@MapperScan(annotationClass = Repository.class, basePackages = "com.demo.zhulong.base.dao")
 public class DatasourceTest {
     @Autowired
     DataSourceProperties dataSourceProperties;
