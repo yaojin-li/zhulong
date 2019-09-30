@@ -1,25 +1,43 @@
 package com.demo.zhulong.service;
 
-import com.demo.zhulong.base.beans.ImageVo;
-import com.demo.zhulong.base.dao.ImageMapper;
+import com.demo.zhulong.base.beans.Images;
+import com.demo.zhulong.base.dao.ImagesMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
-/**
- * @Description: 图像列表管理service
- * @Author: John
- * @Tags:
- * @Date: 2017年8月4日 下午4:34:29
- */
+@Service
 public class ImageService {
-    @Autowired
-    private ImageMapper imageMapper;
 
-    public List<ImageVo> selectAll() throws Exception {
-        return imageMapper.selectAll();
+    @Autowired
+    private ImagesMapper imagesMapper;
+
+    public List<Images> selectAll() throws Exception {
+        List<Images> result = new ArrayList<>();
+        result.add(imagesMapper.selectByPrimaryKey(1));
+        return result;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /**
      * @Description: 商品查询列表
