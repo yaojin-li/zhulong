@@ -28,8 +28,7 @@ public class ImageService {
 
     public List<Images> selectAll() throws Exception {
         List<Images> result = new ArrayList<>();
-        result.add(imagesMapper.selectByPrimaryKey(1));
-        return result;
+        return imagesMapper.selectAll();
     }
 
 

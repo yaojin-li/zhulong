@@ -3,7 +3,7 @@ package com.demo.zhulong.config.dataSource;
 import com.alibaba.druid.pool.DruidDataSource;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
-import org.mybatis.spring.annotation.MapperScan;
+import tk.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -27,7 +27,7 @@ import javax.sql.DataSource;
  **/
 
 @Configuration
-@MapperScan(basePackages = {"com.demo.zhulong.base.dao"},
+@MapperScan(basePackages = {"com.demo.zhulong.base.dao.*"},
         sqlSessionFactoryRef = "mysqlOneSqlSessionFactory")
 public class DruidDBConfig {
 

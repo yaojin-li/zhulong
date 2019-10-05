@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
  **/
 @Controller
 public class TablesController {
-    @RequestMapping(value = "/tables")
+    @RequestMapping(value = "/images")
     public String index() {
-        return "tables.html";
+        return "images.html";
     }
 }

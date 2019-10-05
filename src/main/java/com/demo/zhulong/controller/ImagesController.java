@@ -5,9 +5,9 @@ import com.demo.zhulong.service.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import org.apache.log4j.Logger;
 import java.util.List;
 
 /**
@@ -20,19 +20,19 @@ import java.util.List;
  * @Contact: lixj_zj@163.com
  **/
 @Controller
-@RequestMapping(value = "/imagesController")
 public class ImagesController {
+    private static final Logger logger = Logger.getLogger(ImagesController.class);
 
     @Autowired
     public ImageService imageService;
 
-    @RequestMapping(value = "/queryImage",produces = "application/json;charset=utf-8")
-    @ResponseBody
+    @RequestMapping(value = "/queryImage")
     public ModelAndView query() throws Exception{
         List<Images> imageList = imageService.selectAll();
-        System.out.println(imageList);
+        logger.info(String.format("查询 images 结果：%s", imageList));
         ModelAndView modelAndView = new ModelAndView();
-
+        modelAndView.addObject("images", imageList);
+        modelAndView.setViewName("images.html");
         return modelAndView;
     }
 }
