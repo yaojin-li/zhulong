@@ -108,11 +108,11 @@
             <version>2.0.0</version>
         </dependency>
 
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.17</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>log4j</groupId>-->
+            <!--<artifactId>log4j</artifactId>-->
+            <!--<version>1.2.17</version>-->
+        <!--</dependency>-->
 
         <!--fileupload文件上传-->
         <dependency>
@@ -173,7 +173,6 @@
             <artifactId>mybatis</artifactId>
             <version>3.5.1</version>
         </dependency>
-
     </dependencies>
 
     <build>
