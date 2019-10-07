@@ -11,7 +11,7 @@
  Target Server Version : 80015
  File Encoding         : 65001
 
- Date: 29/09/2019 16:55:38
+ Date: 07/10/2019 20:22:47
 */
 
 SET NAMES utf8mb4;
@@ -126,6 +126,15 @@ CREATE TABLE `images`  (
 -- ----------------------------
 INSERT INTO `images` VALUES (0, '图片test', 'new图片test', 'jpg', 200, 'd:/abc/', 'JLJASDF341JJ', '2019-09-28 11:36:46', '2019-09-28 11:36:49', '上传者a', '注释', ' 备注', '扩展字段1', ' 扩展字段2');
 INSERT INTO `images` VALUES (1, '图片test2', 'new图片test2', 'png', 20, 'd:/abcd/', 'DANLCSAJDL', '2019-09-28 11:39:32', '2019-09-28 11:39:32', '上传者b', '注释', ' 备注', '扩展字段1', ' 扩展字段2');
+INSERT INTO `images` VALUES (3, '图片test3', 'new图片test3', 'png', 20, 'd:/abcd/', 'DANLCSAJDL', '2019-09-28 11:39:32', '2019-09-28 11:39:32', '上传者b', '注释', ' 备注', '扩展字段1', ' 扩展字段2');
+INSERT INTO `images` VALUES (4, '图片test4', 'new图片test4', 'png', 20, 'd:/abcd/', 'DANLCSAJDL', '2019-09-28 11:39:32', '2019-09-28 11:39:32', '上传者b', '注释', ' 备注', '扩展字段1', ' 扩展字段2');
+INSERT INTO `images` VALUES (5, '图片test5', 'new图片test5', 'png', 20, 'd:/abcd/', 'DANLCSAJDL', '2019-09-28 11:39:32', '2019-09-28 11:39:32', '上传者b', '注释', ' 备注', '扩展字段1', ' 扩展字段2');
+INSERT INTO `images` VALUES (6, '图片test6', 'new图片test6', 'png', 20, 'd:/abcd/', 'DANLCSAJDL', '2019-09-28 11:39:32', '2019-09-28 11:39:32', '上传者b', '注释', ' 备注', '扩展字段1', ' 扩展字段2');
+INSERT INTO `images` VALUES (7, '图片test77', 'new图片test7', 'png', 20, 'd:/abcd/', 'DANLCSAJDL', '2019-09-28 11:39:32', '2019-09-28 11:39:32', '上传者b', '注释', ' 备注', '扩展字段1', ' 扩展字段2');
+INSERT INTO `images` VALUES (8, '图片test8', 'new图片test8', 'png', 20, 'd:/abcd/', 'DANLCSAJDL', '2019-09-28 11:39:32', '2019-09-28 11:39:32', '上传者b', '注释', ' 备注', '扩展字段1', ' 扩展字段2');
+INSERT INTO `images` VALUES (9, '图片test9', 'new图片test9', 'png', 20, 'd:/abcd/', 'DANLCSAJDL', '2019-09-28 11:39:32', '2019-09-28 11:39:32', '上传者b', '注释', ' 备注', '扩展字段1', ' 扩展字段2');
+INSERT INTO `images` VALUES (10, '图片test10', 'new图片test10', 'png', 20, 'd:/abcd/', 'DANLCSAJDL', '2019-09-28 11:39:32', '2019-09-28 11:39:32', '上传者b', '注释', ' 备注', '扩展字段1', ' 扩展字段2');
+INSERT INTO `images` VALUES (11, '图片test11', 'new图片test11', 'png', 20, 'd:/abcd/', 'DANLCSAJDL', '2019-09-28 11:39:32', '2019-09-28 11:39:32', '上传者b', '注释', ' 备注', '扩展字段1', ' 扩展字段2');
 
 -- ----------------------------
 -- Table structure for operate_logs
