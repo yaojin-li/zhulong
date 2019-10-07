@@ -45,6 +45,7 @@
                                             <th>Uploader</th>
                                             <th>Description</th>
                                             <th>Remark</th>
+                                            <th>Operate</th>
                                         </tr>
                                         </thead>
 
@@ -57,11 +58,22 @@
                                             <td th:text="${image.size}"></td>
                                             <td th:text="${image.position}"></td>
                                             <td th:text="${image.uuid}"></td>
-                                            <td th:text="${image.createTime}"></td>
-                                            <td th:text="${image.updateTime}"></td>
+                                            <td th:text="${#dates.format(image.createTime, 'yyyy-MM-dd')}"></td>
+                                            <td th:text="${#dates.format(image.updateTime, 'yyyy-MM-dd')}"></td>
                                             <td th:text="${image.uploader}"></td>
                                             <td th:text="${image.description}"></td>
                                             <td th:text="${image.remark}"></td>
+                                            <td>
+                                                <!--<a data-toggle="modal" href="#exampleModalLabel"><span-->
+                                                <!--onclick='test("${image.id}","${image.new_title}","${image.description}","${image.remark}")'>修改</span></a>&nbsp;-->
+
+                                                <a href="#" data-toggle="modal" data-target="#logoutModal"
+                                                   onclick="">修改</a>&nbsp;
+
+                                                <a href="${contextPath}/imageController/downloadImage?img_UUID=${image.img_UUID}&title=${image.title}">下载</a>&nbsp;
+
+                                                <a href="javascript:if(confirm('确实要删除吗?'))location='${contextPath}/imageController/deleteImage?id=${image.id}&img_UUID=${image.img_UUID}&title=${image.title}'">删除</a>
+                                            </td>
                                         </tr>
                                         </tbody>
 
@@ -78,6 +90,48 @@
             </div>
         </div>
 
+
+        <!-- 模态弹出窗内容 -->
+        <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+             aria-hidden="true" th:fragment="logout_modal">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Modify information</h5>
+                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group" style="display: none;">
+                            <label for="fileid">文件id</label> <input type="text"
+                                                                    name="fileid" class="form-control" id="fileid"
+                                                                    placeholder="文件id">
+                        </div>
+                        <div class="form-group">
+                            <label for="filename">文件名</label> <input type="text"
+                                                                     name="filename" class="form-control" id="filename"
+                                                                     placeholder="文件名">
+                        </div>
+                        <div class="form-group">
+                            <label for="filedes">描述</label> <input type="text" name="filedes"
+                                                                   class="form-control" id="filedes" placeholder="描述">
+                        </div>
+                        <div class="form-group">
+                            <label for="fileremark">备注</label>
+                            <textarea class="form-control" rows="3" type="text" id="fileremark" name="fileremark"
+                                      placeholder="备注"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                        <a class="btn btn-primary" href="https://www.baidu.com">Save</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
         <!-- ############################## 滚动到顶端 ############################## -->
         <a th:replace="/base/commons.html::scroll_to_top"></a>
 
@@ -86,6 +140,66 @@
 
         <!-- ############################## 公共部分js ############################## -->
         <span th:replace="/base/commons.html::base_js"></span>
+
+
+
+        <script type="text/javascript">
+
+            //获取修改选中行一行的对应值，参数传递到模态框中
+            function test(id,name,des,remark){
+                $('#fileid').val(id);
+                $('#filename').val(name);
+                $('#filedes').val(des);
+                $('#fileremark').val(remark);
+                //debugger;
+            }
+
+            //模态框提交--ajax
+            $(function() {
+
+                $("#btn_submit").click(function() {
+
+                    var file_changed = [];
+
+                    //获取模态框中的数据
+                    var fileid = $("#fileid").val();
+                    var filename = $("#filename").val();
+                    var filedes = $("#filedes").val();
+                    var fileremark = $("#fileremark").val();
+                    file_changed.push(fileid);
+                    file_changed.push(filename);
+                    file_changed.push(filedes);
+                    file_changed.push(fileremark);
+
+                    //ajax
+                    $(function() {
+                        $.ajax({
+                            headers: {
+                                Accept: "application/json; charset=utf-8"
+                            },
+                            type : "post",
+                            async : true,
+                            url : "http://localhost:8085/maven-web-demo/imageController/changeImageInfo",
+                            timeout: "3000",
+                            data : {
+                                "file_changed":JSON.stringify(file_changed)
+                            },
+                            //dataType : "json",
+                            success : function(data) {
+                                alert("修改成功！");
+                                location.reload();//刷新
+                            },
+                            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                                alert(XMLHttpRequest.status);
+                                alert(XMLHttpRequest.readyState);
+                                alert(textStatus);
+                            }
+                        });
+                    });
+                });
+            });
+        </script>
+
 
     </body>
 </html>

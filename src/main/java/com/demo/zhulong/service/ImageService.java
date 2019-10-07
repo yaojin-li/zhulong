@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,26 +26,8 @@ public class ImageService {
     private ImagesMapper imagesMapper;
 
     public List<Images> selectAll() throws Exception {
-        List<Images> result = new ArrayList<>();
         return imagesMapper.selectAll();
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     /**
@@ -69,7 +50,9 @@ public class ImageService {
     /**
      * @Description: 更新图像信息
      */
-//	public int updateImage(ImageCustom imageCustom) throws Exception;
+	public int updateImage(Images images) throws Exception{
+	    return imagesMapper.updateByPrimaryKey(images);
+    }
 
 
 }
