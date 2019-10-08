@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
+
     <!-- ############################## head ################################# -->
     <head th:replace="/base/commons.html::head"></head>
 
@@ -35,7 +36,6 @@
                                         <tr>
                                             <th>ID</th>
                                             <th>Title</th>
-                                            <th>NewTitle</th>
                                             <th>Tpye</th>
                                             <th>Size</th>
                                             <th>Position</th>
@@ -43,36 +43,27 @@
                                             <th>CreateTime</th>
                                             <th>UpdateTime</th>
                                             <th>Uploader</th>
-                                            <th>Description</th>
-                                            <th>Remark</th>
                                             <th>Operate</th>
                                         </tr>
                                         </thead>
 
                                         <tbody>
                                         <tr th:each="image:${images}">
-                                            <td th:text="${image.id}">id</td>
-                                            <td th:text="${image.title}">title</td>
-                                            <td th:text="${image.newTitle}"></td>
+                                            <td th:text="${image.id}"></td>
+                                            <td th:text="${image.title}"></td>
                                             <td th:text="${image.type}"></td>
                                             <td th:text="${image.size}"></td>
                                             <td th:text="${image.position}"></td>
                                             <td th:text="${image.uuid}"></td>
-                                            <td th:text="${#dates.format(image.createTime, 'yyyy-MM-dd')}"></td>
-                                            <td th:text="${#dates.format(image.updateTime, 'yyyy-MM-dd')}"></td>
+                                            <td th:text="${#dates.format(image.createTime, 'yyyy-MM-dd')}">
+                                            </td>
+                                            <td th:text="${#dates.format(image.updateTime, 'yyyy-MM-dd')}">
+                                            </td>
                                             <td th:text="${image.uploader}"></td>
-                                            <td th:text="${image.description}"></td>
-                                            <td th:text="${image.remark}"></td>
                                             <td>
-                                                <!--<a data-toggle="modal" href="#exampleModalLabel"><span-->
-                                                <!--onclick='test("${image.id}","${image.new_title}","${image.description}","${image.remark}")'>修改</span></a>&nbsp;-->
-
-                                                <a href="#" data-toggle="modal" data-target="#logoutModal"
-                                                   onclick="">修改</a>&nbsp;
-
-                                                <a href="${contextPath}/imageController/downloadImage?img_UUID=${image.img_UUID}&title=${image.title}">下载</a>&nbsp;
-
-                                                <a href="javascript:if(confirm('确实要删除吗?'))location='${contextPath}/imageController/deleteImage?id=${image.id}&img_UUID=${image.img_UUID}&title=${image.title}'">删除</a>
+                                                <a th:data-id="${image.uuid}" data-toggle="modal" href="#logoutModal"
+                                                   th:onclick="javascript:modInfo(this.getAttribute('data-id'))">test
+                                                </a>
                                             </td>
                                         </tr>
                                         </tbody>
@@ -125,7 +116,7 @@
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                        <a class="btn btn-primary" href="https://www.baidu.com">Save</a>
+                        <a class="btn btn-primary" id="btn_submit">Save</a>
                     </div>
                 </div>
             </div>
@@ -138,68 +129,58 @@
         <!-- ############################## 推出弹框 ############################## -->
         <div th:replace="/base/commons.html::logout_modal"></div>
 
-        <!-- ############################## 公共部分js ############################## -->
-        <span th:replace="/base/commons.html::base_js"></span>
+    </body>
+
+    <!-- ############################## 公共部分js ############################## -->
+    <span th:replace="/base/commons.html::base_js"></span>
 
 
+    <script type="text/javascript" th:inline="javascript">
+        function modInfo(obj) {
+            alert(obj);
+        }
 
-        <script type="text/javascript">
+        //模态框提交--ajax
+        $(function () {
+            $("#btn_submit").click(function () {
 
-            //获取修改选中行一行的对应值，参数传递到模态框中
-            function test(id,name,des,remark){
-                $('#fileid').val(id);
-                $('#filename').val(name);
-                $('#filedes').val(des);
-                $('#fileremark').val(remark);
-                //debugger;
-            }
+                var file_changed = [];
 
-            //模态框提交--ajax
-            $(function() {
+                //获取模态框中的数据
+                var fileuuid = $("#fileuuid").val();
+                file_changed.push(fileuuid);
 
-                $("#btn_submit").click(function() {
-
-                    var file_changed = [];
-
-                    //获取模态框中的数据
-                    var fileid = $("#fileid").val();
-                    var filename = $("#filename").val();
-                    var filedes = $("#filedes").val();
-                    var fileremark = $("#fileremark").val();
-                    file_changed.push(fileid);
-                    file_changed.push(filename);
-                    file_changed.push(filedes);
-                    file_changed.push(fileremark);
-
-                    //ajax
-                    $(function() {
-                        $.ajax({
-                            headers: {
-                                Accept: "application/json; charset=utf-8"
-                            },
-                            type : "post",
-                            async : true,
-                            url : "http://localhost:8085/maven-web-demo/imageController/changeImageInfo",
-                            timeout: "3000",
-                            data : {
-                                "file_changed":JSON.stringify(file_changed)
-                            },
-                            //dataType : "json",
-                            success : function(data) {
-                                alert("修改成功！");
-                                location.reload();//刷新
-                            },
-                            error: function(XMLHttpRequest, textStatus, errorThrown) {
-                                alert(XMLHttpRequest.status);
-                                alert(XMLHttpRequest.readyState);
-                                alert(textStatus);
-                            }
-                        });
+                //ajax
+                $(function () {
+                    $.ajax({
+                        headers: {
+                            Accept: "application/json; charset=utf-8"
+                        },
+                        type: "post",
+                        async: true,
+                        url: "http://localhost:8085/maven-web-demo/modifyImage",
+                        timeout: "3000",
+                        data: {
+                            "file_changed": JSON.stringify(file_changed)
+                        },
+                        //dataType : "json",
+                        success: function (data) {
+                            alert("修改成功！");
+                            location.reload();//刷新
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            alert(XMLHttpRequest.status);
+                            alert(XMLHttpRequest.readyState);
+                            alert(textStatus);
+                        }
                     });
                 });
             });
-        </script>
+        });
+    </script>
 
 
-    </body>
 </html>
+
+
+

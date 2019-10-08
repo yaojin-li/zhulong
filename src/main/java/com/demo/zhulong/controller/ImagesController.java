@@ -40,6 +40,15 @@ public class ImagesController {
         return modelAndView;
     }
 
+
+    @RequestMapping(value = "/deleteImage")
+    public ModelAndView delete(HttpServletRequest request, HttpServletResponse response){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("modResult","success");
+        modelAndView.setViewName("images.html");
+        return modelAndView;
+    }
+
     @RequestMapping(value = "/modifyImage", method = RequestMethod.POST)
     public ModelAndView modify(HttpServletRequest request, HttpServletResponse response) throws Exception{
         String changeData = request.getParameter("");
