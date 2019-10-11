@@ -6,5 +6,6 @@ import tk.mybatis.mapper.common.Mapper;
 @org.apache.ibatis.annotations.Mapper
 public interface ImagesMapper extends Mapper<Images>{
 
+    int updateImgByUuid(Images record);
 
 }

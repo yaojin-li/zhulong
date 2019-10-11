@@ -1,9 +1,11 @@
 package com.demo.zhulong.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.demo.zhulong.base.beans.Images;
 import com.demo.zhulong.service.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
@@ -42,31 +44,76 @@ public class ImagesController {
 
 
     @RequestMapping(value = "/deleteImage")
-    public ModelAndView delete(HttpServletRequest request, HttpServletResponse response){
+    public ModelAndView delete(HttpServletRequest request, Model model) throws Exception{
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("modResult","success");
-        modelAndView.setViewName("images.html");
-        return modelAndView;
-    }
-
-    @RequestMapping(value = "/modifyImage", method = RequestMethod.POST)
-    public ModelAndView modify(HttpServletRequest request, HttpServletResponse response) throws Exception{
-        String changeData = request.getParameter("");
-
+        String uuid = request.getParameter("uuid");
         try{
-            Images images = new Images();
-            int modCounts = imageService.updateImage(images);
+            // 1. 服务器删除
+            int delCounts = imageService.deleteImageByUuid(uuid);
+            if (delCounts<=0){
+                logger.error(String.format("服务器删除 images 失败！images uuid: %s", uuid));
+                modelAndView.addObject("modResult","failure");
+                modelAndView.setViewName("images.html");
+            }else {
+                logger.info(String.format("服务器删除 images 个数：%s", delCounts));
+            }
 
-            logger.info(String.format("修改 images 个数：%s", modCounts));
+            // 2. TODO HDFS 删除
+
         }catch (Exception e){
             e.printStackTrace();
             request.setAttribute("modResult", "failure");
-            request.getRequestDispatcher("");
         }
 
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("modResult","success");
+        model.addAttribute("modResult","success");
         modelAndView.setViewName("images.html");
         return modelAndView;
     }
+
+
+    @RequestMapping(value = "/modifyImage")
+    public ModelAndView modify(HttpServletRequest request, Model model) throws Exception{
+        String imgModInfo = request.getParameter("imgModInfo");
+        ModelAndView modelAndView = new ModelAndView();
+
+        try{
+            int modCounts = imageService.updateImage(imgModInfo);
+            // 修改失败
+            if (modCounts <= 0){
+                logger.error(String.format("服务器修改 images 失败！images: %s", imgModInfo));
+                modelAndView.addObject("modResult","failure");
+                modelAndView.setViewName("images.html");
+                return modelAndView;
+            }else {
+                logger.info(String.format("服务器修改 images 个数：%s", modCounts));
+            }
+
+            // TODO HDFS 修改
+
+
+        }catch (Exception e){
+            e.printStackTrace();
+            request.setAttribute("modResult", "failure");
+        }
+
+        model.addAttribute("modResult","success");
+        modelAndView.setViewName("images.html");
+        return modelAndView;
+    }
+
+
+    @RequestMapping(value = "/downloadImage")
+    public void downloadImage(HttpServletRequest request, HttpServletResponse response) throws Exception{
+        request.setCharacterEncoding("utf-8");
+        String uuid = request.getParameter("uuid");
+        try{
+            imageService.downloadImage(uuid);
+        }catch (Exception e){
+            e.getStackTrace();
+        }
+    }
+
+
+
+
 }

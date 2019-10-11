@@ -1,11 +1,13 @@
 package com.demo.zhulong.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.demo.zhulong.base.beans.Images;
 import com.demo.zhulong.base.dao.ImagesMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -31,11 +33,6 @@ public class ImageService {
 
 
     /**
-     * @Description: 商品查询列表
-     */
-//	public List<ImageVo> selectAll() throws Exception;
-
-    /**
      * @Description: 插入图像
      */
 //	public int insertImage(ImageCustom imageCustom) throws Exception;
@@ -44,16 +41,40 @@ public class ImageService {
     /**
      * @Description: 删除图像
      */
-//	public int deleteImage(Integer id) throws Exception;
+	public int deleteImageByUuid(String uuid) throws Exception{
+	    Images images = new Images();
+	    images.setUuid(uuid);
+	    return imagesMapper.delete(images);
+    }
 
 
     /**
      * @Description: 更新图像信息
      */
-	public int updateImage(Images images) throws Exception{
-	    return imagesMapper.updateByPrimaryKey(images);
+	public int updateImage(String imgModInfo) throws Exception{
+        JSONObject imgModJson = JSONObject.parseObject(imgModInfo);
+        String uuid = (String) imgModJson.get("uuid");
+        String title = (String) imgModJson.get("title");
+        String uploader = (String) imgModJson.get("uploader");
+
+        Images images = new Images();
+        images.setUuid(uuid);
+        images.setTitle(title);
+        images.setUploader(uploader);
+        images.setUpdateTime(new Date());
+
+	    return imagesMapper.updateImgByUuid(images);
     }
 
+
+    /**
+     * @Description: 下载图像
+     */
+    public void downloadImage(String uuid) throws Exception{
+        // TODO HDFS 下载
+
+
+    }
 
 }
 

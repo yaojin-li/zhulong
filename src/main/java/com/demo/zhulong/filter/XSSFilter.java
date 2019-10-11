@@ -1,7 +1,6 @@
 package com.demo.zhulong.filter;
 
-import com.demo.zhulong.utils.StringUtil;
-import org.apache.commons.lang3.StringUtils;
+import com.demo.zhulong.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +53,7 @@ public class XSSFilter implements Filter {
      * @return 正则表达式规则
      */
     private String getRegStr(String str) {
-        if (StringUtils.isNotBlank(str)) {
+        if (org.apache.commons.lang3.StringUtils.isNotBlank(str)) {
             // 以分号进行分割
             String[] excludes = str.split(";");
             int length = excludes.length;
@@ -66,7 +65,7 @@ public class XSSFilter implements Filter {
                 tmpExclude = "^" + tmpExclude + "$";
                 excludes[i] = tmpExclude;
             }
-            return StringUtils.join(excludes, "|");
+            return org.apache.commons.lang3.StringUtils.join(excludes, "|");
         }
         return str;
     }
@@ -84,7 +83,7 @@ public class XSSFilter implements Filter {
                          FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         String requestURI = request.getRequestURI();
-        if (StringUtils.isNotBlank(requestURI)) {
+        if (org.apache.commons.lang3.StringUtils.isNotBlank(requestURI)) {
             requestURI = requestURI.replace(request.getContextPath(), "");
         }
         if (pattern.matcher(requestURI).matches()) {
@@ -165,7 +164,7 @@ public class XSSFilter implements Filter {
          * 解码：StringEscapeUtils.unescapeXml(escapedStr)
          */
         private String escapeXSS(String str) {
-            str = StringUtil.html2Text(str);
+            str = StringUtils.html2Text(str);
             return str;
         }
 

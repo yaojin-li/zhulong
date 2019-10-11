@@ -19,5 +19,47 @@
   </resultMap>
 
 
+    <update id="updateImgByUuid" parameterType="com.demo.zhulong.base.beans.Images">
+        update images
+        <set>
+            <if test="title != null">
+                TITLE = #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="newTitle != null">
+                NEW_TITLE = #{newTitle,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                TYPE = #{type,jdbcType=VARCHAR},
+            </if>
+            <if test="size != null">
+                SIZE = #{size,jdbcType=INTEGER},
+            </if>
+            <if test="position != null">
+                POSITION = #{position,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="uploader != null">
+                UPLOADER = #{uploader,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null">
+                DESCRIPTION = #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                REMARK = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="note1 != null">
+                NOTE1 = #{note1,jdbcType=VARCHAR},
+            </if>
+            <if test="note2 != null">
+                NOTE2 = #{note2,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where UUID = #{uuid,jdbcType=VARCHAR}
+    </update>
 
 </mapper>

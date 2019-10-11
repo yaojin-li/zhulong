@@ -61,8 +61,18 @@
                                             </td>
                                             <td th:text="${image.uploader}"></td>
                                             <td>
-                                                <a th:data-id="${image.uuid}" data-toggle="modal" href="#logoutModal"
-                                                   th:onclick="javascript:modInfo(this.getAttribute('data-id'))">test
+                                                <a th:data-id="${image.uuid}+'|'+${image.title}+'|'+${image.uploader}"
+                                                   data-toggle="modal" href="#logoutModal"
+                                                   th:onclick="javascript:modInfo(this.getAttribute('data-id'))">修改&nbsp;
+                                                </a>
+
+                                                <a th:data-id="${image.uuid}" data-toggle="modal"
+                                                   th:href="javascript:if(configm('确定删除？'))
+                                                   location='${/deleteImage?uuid=}' + (this.getAttribute('data-id'))">删除&nbsp;
+                                                </a>
+
+                                                <a th:data-id="${image.uuid}" data-toggle="modal"
+                                                   th:href="location='${/downloadImage?uuid=' + (this.getAttribute('data-id'))">下载&nbsp;
                                                 </a>
                                             </td>
                                         </tr>
@@ -94,24 +104,17 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <div class="form-group" style="display: none;">
-                            <label for="fileid">文件id</label> <input type="text"
-                                                                    name="fileid" class="form-control" id="fileid"
-                                                                    placeholder="文件id">
+                        <div class="form-group" style="display: none">
+                            <label for="uuid">UUID</label>
+                            <input type="text" class="form-control" id="uuid" placeholder="UUID">
                         </div>
                         <div class="form-group">
-                            <label for="filename">文件名</label> <input type="text"
-                                                                     name="filename" class="form-control" id="filename"
-                                                                     placeholder="文件名">
+                            <label for="title">Title</label>
+                            <input type="text" class="form-control" id="title" placeholder="Title">
                         </div>
                         <div class="form-group">
-                            <label for="filedes">描述</label> <input type="text" name="filedes"
-                                                                   class="form-control" id="filedes" placeholder="描述">
-                        </div>
-                        <div class="form-group">
-                            <label for="fileremark">备注</label>
-                            <textarea class="form-control" rows="3" type="text" id="fileremark" name="fileremark"
-                                      placeholder="备注"></textarea>
+                            <label for="uploader">Uploader</label>
+                            <input type="text" class="form-control" id="uploader" placeholder="Uploader">
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -137,18 +140,27 @@
 
     <script type="text/javascript" th:inline="javascript">
         function modInfo(obj) {
-            alert(obj);
+            var info = obj.split("|");
+            var uuid = info[0];
+            var title = info[1];
+            var uploader = info[2];
+
+            //获取修改选中行一行的对应值，参数传递到模态框中
+            $('#uuid').val(uuid);
+            $('#title').val(title);
+            $('#uploader').val(uploader);
         }
 
         //模态框提交--ajax
         $(function () {
             $("#btn_submit").click(function () {
 
-                var file_changed = [];
-
                 //获取模态框中的数据
-                var fileuuid = $("#fileuuid").val();
-                file_changed.push(fileuuid);
+                var imgModInfo = {
+                    "uuid" : $("#uuid").val(),
+                    "title" :  $('#title').val(),
+                    "uploader" : $('#uploader').val()
+                }
 
                 //ajax
                 $(function () {
@@ -158,20 +170,20 @@
                         },
                         type: "post",
                         async: true,
-                        url: "http://localhost:8085/maven-web-demo/modifyImage",
+                        url: "/modifyImage",
                         timeout: "3000",
                         data: {
-                            "file_changed": JSON.stringify(file_changed)
+                            "imgModInfo": JSON.stringify(imgModInfo)
                         },
-                        //dataType : "json",
-                        success: function (data) {
-                            alert("修改成功！");
-                            location.reload();//刷新
+                        success: function () {
+                            var modResult = [[${modResult}]];
+                            if (modResult === "sucess"){
+                                alert("修改成功！");
+                                location.reload();//刷新
+                            }
                         },
-                        error: function (XMLHttpRequest, textStatus, errorThrown) {
-                            alert(XMLHttpRequest.status);
-                            alert(XMLHttpRequest.readyState);
-                            alert(textStatus);
+                        error: function (e) {
+                            console.log(e);
                         }
                     });
                 });

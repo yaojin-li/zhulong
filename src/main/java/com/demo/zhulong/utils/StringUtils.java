@@ -1,20 +1,18 @@
 package com.demo.zhulong.utils;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.regex.Pattern;
 
 /**
  * @Description: 字符串工具类
  * --------------------------------------
- * @ClassName: StringUtil.java
+ * @ClassName: StringUtils.java
  * @Date: 2019/9/17 20:19
  * @SoftWare: IntelliJ IDEA
  * --------------------------------------
  * @Author: lixj
  * @Contact: lixj_zj@163.com
  **/
-public final class StringUtil {
+public final class StringUtils {
 
     /**
      * @Description: HTML转换为普通文本
@@ -23,7 +21,7 @@ public final class StringUtil {
      * @ReturnType:
      **/
     public static String html2Text(String inputString) {
-        if (StringUtils.isEmpty(inputString)){
+        if (org.apache.commons.lang3.StringUtils.isEmpty(inputString)){
             return inputString;
         }
         // 含html标签的字符串
