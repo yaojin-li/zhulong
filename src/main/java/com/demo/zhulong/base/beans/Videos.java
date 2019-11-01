@@ -1,8 +1,12 @@
 package com.demo.zhulong.base.beans;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Videos {
+public class Videos implements Serializable {
+
+    private static final long serialVersionUID = -3638777831546358524L;
+
     private Integer id;
 
     private String title;

@@ -1,8 +1,13 @@
 package com.demo.zhulong.base.beans;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Images {
+
+public class Images implements Serializable {
+
+    private static final long serialVersionUID = 9180277090942671378L;
+
     private Integer id;
 
     private String title;
