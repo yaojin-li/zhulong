@@ -13,16 +13,16 @@ import java.util.Date;
 /**
  * @Description: --------------------------------------
  * @ClassName: DataSender.java
- * @Date: 2019/11/2 16:25
+ * @Date: 2019/11/2 19:25
  * @SoftWare: IntelliJ IDEA
  * --------------------------------------
  * @Author: lixj
  * @Contact: lixj_zj@163.com
  **/
 @Component
-public class DataSender {
+public class DataSenderTwo {
 
-    private static final Logger logger = LoggerFactory.getLogger(DataSender.class);
+    private static final Logger logger = LoggerFactory.getLogger(DataSenderTwo.class);
 
     @Autowired
     private AmqpTemplate rabbitTemplate;
@@ -30,7 +30,7 @@ public class DataSender {
     public void send(int count){
         Date dt = new Date();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String context = "发送者 1 send " + count + " data. 日期；" + dateFormat.format(dt);
+        String context = "发送者 2 send " + count + " data. 日期；" + dateFormat.format(dt);
         logger.info(context);
         this.rabbitTemplate.convertAndSend("data", context);
     }
@@ -38,21 +38,9 @@ public class DataSender {
     public void send(){
         Date dt = new Date();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String context = "发送者 1 send data. 日期；" + dateFormat.format(dt);
+        String context = "发送者 2 send data. 日期；" + dateFormat.format(dt);
         logger.info(context);
         this.rabbitTemplate.convertAndSend("data", context);
-    }
-
-    public void send1() {
-        String context = "hi, i am message 1";
-        System.out.println("Sender : " + context);
-        this.rabbitTemplate.convertAndSend("exchange", "topic.message", context);
-    }
-
-    public void send2() {
-        String context = "hi, i am messages 2";
-        System.out.println("Sender : " + context);
-        this.rabbitTemplate.convertAndSend("exchange", "topic.messages", context);
     }
 
 }

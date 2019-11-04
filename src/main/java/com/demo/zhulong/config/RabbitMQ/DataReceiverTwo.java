@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 /**
  * @Description: --------------------------------------
  * @ClassName: DataReceiver.java
- * @Date: 2019/11/2 16:26
+ * @Date: 2019/11/2 19:26
  * @SoftWare: IntelliJ IDEA
  * --------------------------------------
  * @Author: lixj
@@ -17,12 +17,12 @@ import org.springframework.stereotype.Component;
  **/
 @Component
 @RabbitListener(queues = "data")
-public class DataReceiver {
+public class DataReceiverTwo {
 
-    private static final Logger logger = LoggerFactory.getLogger(DataReceiver.class);
+    private static final Logger logger = LoggerFactory.getLogger(DataReceiverTwo.class);
 
     @RabbitHandler
     public void process(String data){
-        logger.info("接受者 1 接收数据：" + data);
+        logger.info("接受者 2 接收数据：" + data);
     }
 }
