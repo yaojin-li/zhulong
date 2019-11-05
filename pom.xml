@@ -11,6 +11,7 @@
     <groupId>com.demo</groupId>
     <artifactId>ZhuLong</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <packaging>war</packaging>
     <name>ZhuLong</name>
     <description>Demo project for Spring Boot</description>
 
@@ -136,7 +137,12 @@
             <artifactId>spring-boot-starter-amqp</artifactId>
         </dependency>
 
-
+        <!-- 热部署 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <optional>true</optional>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -232,7 +238,7 @@
 
     <build>
         <plugins>
-            <!--开发环境调试-->
+            <!--开发环境调试 热部署-->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
