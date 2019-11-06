@@ -46,11 +46,15 @@ import com.alibaba.fastjson.JSONObject;
 import com.demo.zhulong.common.HDFSConstants;
 
 /**
- * @Author: Administrator
- * @Tags:
  * @Description: 文件相关函数
- * @Date: 2017年7月20日 下午2:19:09
- */
+ * --------------------------------------
+ * @ClassName: CommonController.java
+ * @Date: 2019/11/06 17:49
+ * @SoftWare: IntelliJ IDEA
+ * --------------------------------------
+ * @Author: lixj
+ * @Contact: lixj_zj@163.com
+ **/
 public class FileRelated {
 
 	
