@@ -61,18 +61,20 @@
                                             </td>
                                             <td th:text="${image.uploader}"></td>
                                             <td>
+                                                <span th:text="${modResult}"></span>
+
                                                 <a th:data-id="${image.uuid}+'|'+${image.title}+'|'+${image.uploader}"
                                                    data-toggle="modal" href="#logoutModal"
                                                    th:onclick="javascript:modInfo(this.getAttribute('data-id'))">修改&nbsp;
                                                 </a>
 
-                                                <a th:data-id="${image.uuid}" data-toggle="modal"
-                                                   th:href="javascript:if(configm('确定删除？'))
-                                                   location='${/deleteImage?uuid=}' + (this.getAttribute('data-id'))">删除&nbsp;
-                                                </a>
+                                                <!--<a th:data-id="${image.uuid}" data-toggle="modal"-->
+                                                   <!--th:href="javascript:if(configm('确定删除？'))-->
+                                                   <!--location='${/deleteImage?uuid=}' + (this.getAttribute('data-id'))">删除&nbsp;-->
+                                                <!--</a>-->
 
                                                 <a th:data-id="${image.uuid}" data-toggle="modal"
-                                                   th:href="location='${/downloadImage?uuid=' + (this.getAttribute('data-id'))">下载&nbsp;
+                                                   th:onclick="javascript:downloadImage(this.getAttribute('data-id'))">下载&nbsp;
                                                 </a>
                                             </td>
                                         </tr>
@@ -155,6 +157,9 @@
         $(function () {
             $("#btn_submit").click(function () {
 
+            var modResult = [[${modResult}]];
+
+
                 //获取模态框中的数据
                 var imgModInfo = {
                     "uuid" : $("#uuid").val(),
@@ -175,9 +180,11 @@
                         data: {
                             "imgModInfo": JSON.stringify(imgModInfo)
                         },
+                        dataType: "json",
                         success: function () {
-                            var modResult = [[${modResult}]];
-                            if (modResult === "sucess"){
+                            console.log(modResult);
+                            alert(modResult);
+                            if (modResult === "success"){
                                 alert("修改成功！");
                                 location.reload();//刷新
                             }

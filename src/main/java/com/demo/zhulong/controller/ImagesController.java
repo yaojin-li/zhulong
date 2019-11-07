@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import org.apache.log4j.Logger;
@@ -72,6 +73,7 @@ public class ImagesController {
 
 
     @RequestMapping(value = "/modifyImage")
+    @ResponseBody
     public ModelAndView modify(HttpServletRequest request, Model model) throws Exception{
         String imgModInfo = request.getParameter("imgModInfo");
         ModelAndView modelAndView = new ModelAndView();
@@ -96,7 +98,9 @@ public class ImagesController {
             request.setAttribute("modResult", "failure");
         }
 
-        model.addAttribute("modResult","success");
+//        request.setAttribute("modResult", "success");
+//        model.addAttribute("modResult","success");
+        modelAndView.addObject("modResult","success");
         modelAndView.setViewName("images.html");
         return modelAndView;
     }
