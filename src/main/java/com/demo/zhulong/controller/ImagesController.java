@@ -15,7 +15,9 @@ import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description: --------------------------------------
@@ -34,7 +36,7 @@ public class ImagesController {
     public ImageService imageService;
 
     @RequestMapping(value = "/queryImage")
-    public ModelAndView query() throws Exception{
+    public ModelAndView query() throws Exception {
         List<Images> imageList = imageService.selectAll();
         logger.info(String.format("查询 images 结果：%s", imageList));
         ModelAndView modelAndView = new ModelAndView();
@@ -44,80 +46,69 @@ public class ImagesController {
     }
 
 
-    @RequestMapping(value = "/deleteImage")
-    public ModelAndView delete(HttpServletRequest request, Model model) throws Exception{
-        ModelAndView modelAndView = new ModelAndView();
+    @RequestMapping(value = "/deleteImage", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> delete(HttpServletRequest request, Model model) throws Exception {
+        Map<String, Object> map = new HashMap<>();
         String uuid = request.getParameter("uuid");
-        try{
+        try {
             // 1. 服务器删除
             int delCounts = imageService.deleteImageByUuid(uuid);
-            if (delCounts<=0){
+            if (delCounts <= 0) {
                 logger.error(String.format("服务器删除 images 失败！images uuid: %s", uuid));
-                modelAndView.addObject("modResult","failure");
-                modelAndView.setViewName("images.html");
-            }else {
+                map.put("result", "failure");
+                return map;
+            } else {
                 logger.info(String.format("服务器删除 images 个数：%s", delCounts));
             }
 
             // 2. TODO HDFS 删除
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            request.setAttribute("modResult", "failure");
         }
-
-        model.addAttribute("modResult","success");
-        modelAndView.setViewName("images.html");
-        return modelAndView;
+        model.addAttribute("result", "success");
+        map.put("result", "success");
+        return map;
     }
 
 
-    @RequestMapping(value = "/modifyImage")
+    @RequestMapping(value = "/modifyImage", method = RequestMethod.POST)
     @ResponseBody
-    public ModelAndView modify(HttpServletRequest request, Model model) throws Exception{
+    public Map<String, Object> modify(HttpServletRequest request) throws Exception {
         String imgModInfo = request.getParameter("imgModInfo");
-        ModelAndView modelAndView = new ModelAndView();
-
-        try{
+        Map<String, Object> map = new HashMap<>();
+        try {
             int modCounts = imageService.updateImage(imgModInfo);
             // 修改失败
-            if (modCounts <= 0){
+            if (modCounts <= 0) {
                 logger.error(String.format("服务器修改 images 失败！images: %s", imgModInfo));
-                modelAndView.addObject("modResult","failure");
-                modelAndView.setViewName("images.html");
-                return modelAndView;
-            }else {
+                map.put("result", "failure");
+                return map;
+            } else {
                 logger.info(String.format("服务器修改 images 个数：%s", modCounts));
             }
 
             // TODO HDFS 修改
 
-
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            request.setAttribute("modResult", "failure");
         }
-
-//        request.setAttribute("modResult", "success");
-//        model.addAttribute("modResult","success");
-        modelAndView.addObject("modResult","success");
-        modelAndView.setViewName("images.html");
-        return modelAndView;
+        map.put("result", "success");
+        return map;
     }
 
 
     @RequestMapping(value = "/downloadImage")
-    public void downloadImage(HttpServletRequest request, HttpServletResponse response) throws Exception{
+    public void downloadImage(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request.setCharacterEncoding("utf-8");
         String uuid = request.getParameter("uuid");
-        try{
+        try {
             imageService.downloadImage(uuid);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.getStackTrace();
         }
     }
-
-
 
 
 }

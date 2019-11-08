@@ -1,6 +1,7 @@
 package com.demo.zhulong;
 
 import org.apache.coyote.http11.AbstractHttp11Protocol;
+import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
@@ -12,7 +13,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 
 
-@SpringBootApplication(exclude = DataSourceAutoConfiguration.class)
+@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class, MongoAutoConfiguration.class})
 @MapperScan(basePackages = {"com.demo.zhulong.base.dao.*"})
 //@EnableScheduling  // 开启定时器
 public class ZhuLongApplication extends SpringBootServletInitializer {

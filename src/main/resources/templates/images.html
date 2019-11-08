@@ -24,6 +24,11 @@
                         <!-- Page Heading -->
                         <h1 class="h3 mb-2 text-gray-800">Tables</h1>
 
+                        <form method="POST" action="/upload" enctype="multipart/form-data">
+                            <input type="file" name="file" /><br/><br/>
+                            <input type="submit" value="Submit" />
+                        </form>
+
                         <!-- DataTales Example -->
                         <div class="card shadow mb-4">
                             <div class="card-header py-3">
@@ -34,7 +39,7 @@
                                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                         <thead>
                                         <tr>
-                                            <th>ID</th>
+                                            <th>Row</th>
                                             <th>Title</th>
                                             <th>Tpye</th>
                                             <th>Size</th>
@@ -68,13 +73,11 @@
                                                    th:onclick="javascript:modInfo(this.getAttribute('data-id'))">修改&nbsp;
                                                 </a>
 
-                                                <!--<a th:data-id="${image.uuid}" data-toggle="modal"-->
-                                                   <!--th:href="javascript:if(configm('确定删除？'))-->
-                                                   <!--location='${/deleteImage?uuid=}' + (this.getAttribute('data-id'))">删除&nbsp;-->
-                                                <!--</a>-->
+                                                <a th:data-id="${image.uuid}" data-toggle="modal" href="#"
+                                                   th:onclick="javascript:delInfo(this.getAttribute('data-id'))">删除&nbsp;
+                                                </a>
 
-                                                <a th:data-id="${image.uuid}" data-toggle="modal"
-                                                   th:onclick="javascript:downloadImage(this.getAttribute('data-id'))">下载&nbsp;
+                                                <a th:href="@{/downloadImage/{uuid}(uuid=${image.uuid})}" href="#">下载&nbsp;
                                                 </a>
                                             </td>
                                         </tr>
@@ -141,12 +144,56 @@
 
 
     <script type="text/javascript" th:inline="javascript">
+
+
+        // 修改表格第一列序号从1自增
+        $(function(){
+            //$('table tr:not(:first)').remove();
+            var len = $('table tr').length;
+            for(var i = 1;i<len;i++){
+                $('table tr:eq('+i+') td:first').text(i);
+            }
+        });
+
+        function delInfo(uuid) {
+            if (confirm("确认要删除？")) {
+                //ajax
+                $(function () {
+                    $.ajax({
+                        headers: {
+                            Accept: "application/json; charset=utf-8"
+                        },
+                        type: "post",
+                        async: true,
+                        url: "/deleteImage",
+                        timeout: "3000",
+                        data: {
+                            "uuid": uuid
+                        },
+                        dataType: "json",
+                        success: function (data) {
+                            if (data.result === "success") {
+                                alert("删除成功！");
+                                location.reload();//刷新
+                            } else {
+                                console.log(data);
+                                alert("删除失败！");
+                            }
+                        },
+                        error: function (e) {
+                            console.log(e);
+                        }
+                    });
+                });
+            }
+        }
+
+
         function modInfo(obj) {
             var info = obj.split("|");
             var uuid = info[0];
             var title = info[1];
             var uploader = info[2];
-
             //获取修改选中行一行的对应值，参数传递到模态框中
             $('#uuid').val(uuid);
             $('#title').val(title);
@@ -156,17 +203,12 @@
         //模态框提交--ajax
         $(function () {
             $("#btn_submit").click(function () {
-
-            var modResult = [[${modResult}]];
-
-
                 //获取模态框中的数据
                 var imgModInfo = {
-                    "uuid" : $("#uuid").val(),
-                    "title" :  $('#title').val(),
-                    "uploader" : $('#uploader').val()
+                    "uuid": $("#uuid").val(),
+                    "title": $('#title').val(),
+                    "uploader": $('#uploader').val()
                 }
-
                 //ajax
                 $(function () {
                     $.ajax({
@@ -181,12 +223,13 @@
                             "imgModInfo": JSON.stringify(imgModInfo)
                         },
                         dataType: "json",
-                        success: function () {
-                            console.log(modResult);
-                            alert(modResult);
-                            if (modResult === "success"){
+                        success: function (data) {
+                            if (data.result === "success") {
                                 alert("修改成功！");
                                 location.reload();//刷新
+                            } else {
+                                console.log(data);
+                                alert("修改失败！");
                             }
                         },
                         error: function (e) {
@@ -200,6 +243,5 @@
 
 
 </html>
-
 
 
