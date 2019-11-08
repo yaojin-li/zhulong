@@ -24,11 +24,6 @@
                         <!-- Page Heading -->
                         <h1 class="h3 mb-2 text-gray-800">Tables</h1>
 
-                        <form method="POST" action="/upload" enctype="multipart/form-data">
-                            <input type="file" name="file" /><br/><br/>
-                            <input type="submit" value="Submit" />
-                        </form>
-
                         <!-- DataTales Example -->
                         <div class="card shadow mb-4">
                             <div class="card-header py-3">
@@ -99,7 +94,7 @@
 
         <!-- 模态弹出窗内容 -->
         <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-             aria-hidden="true" th:fragment="logout_modal">
+             aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -134,9 +129,6 @@
         <!-- ############################## 滚动到顶端 ############################## -->
         <a th:replace="/base/commons.html::scroll_to_top"></a>
 
-        <!-- ############################## 推出弹框 ############################## -->
-        <div th:replace="/base/commons.html::logout_modal"></div>
-
     </body>
 
     <!-- ############################## 公共部分js ############################## -->
@@ -147,11 +139,10 @@
 
 
         // 修改表格第一列序号从1自增
-        $(function(){
-            //$('table tr:not(:first)').remove();
+        $(function () {
             var len = $('table tr').length;
-            for(var i = 1;i<len;i++){
-                $('table tr:eq('+i+') td:first').text(i);
+            for (var i = 1; i < len; i++) {
+                $('table tr:eq(' + i + ') td:first').text(i);
             }
         });
 
