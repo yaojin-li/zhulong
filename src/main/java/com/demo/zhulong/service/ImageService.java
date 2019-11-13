@@ -67,14 +67,6 @@ public class ImageService {
     }
 
 
-    /**
-     * @Description: 下载图像
-     */
-    public void downloadImage(String uuid) throws Exception{
-        // TODO HDFS 下载
-
-
-    }
 
 }
 

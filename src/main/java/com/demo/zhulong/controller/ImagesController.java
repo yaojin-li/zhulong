@@ -1,27 +1,26 @@
 package com.demo.zhulong.controller;
 
-import com.alibaba.fastjson.JSONObject;
 import com.demo.zhulong.base.beans.Images;
+import com.demo.zhulong.config.HdfsConfig;
 import com.demo.zhulong.service.ImageService;
-import com.demo.zhulong.utils.StringUtils;
 import org.apache.directory.api.util.Strings;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FSDataInputStream;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-
 import org.apache.log4j.Logger;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.net.URI;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -73,7 +72,7 @@ public class ImagesController {
             // 2. TODO HDFS 删除
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("删除图片异常", e);
         }
         model.addAttribute("result", "success");
         map.put("result", "success");
@@ -100,7 +99,7 @@ public class ImagesController {
             // TODO HDFS 修改
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("修改图像信息异常！", e);
         }
         map.put("result", "success");
         return map;
@@ -147,7 +146,7 @@ public class ImagesController {
             file.transferTo(dest);
             uploadRes = "true";
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("上传图像异常！", e);
             uploadRes = "false";
         }
         modelAndView.addObject("uploadResult", uploadRes);
@@ -157,16 +156,74 @@ public class ImagesController {
 
 
 
-
-    @RequestMapping(value = "/downloadImage")
-    public void downloadImage(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    @RequestMapping(value = "/downloadImage", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> downloadImage(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        Map<String, Object> map = new HashMap<>();
+        logger.info("begin download image...");
         request.setCharacterEncoding("utf-8");
-        String uuid = request.getParameter("uuid");
+        //
+        String imgUuid = request.getParameter("uuid");
+        String title = request.getParameter("title");
+
+        // HDFS 中存储的文件名
+        String fileName = imgUuid + "_" + title;
+        logger.info(String.format("download image is:[%s]", fileName));
+
         try {
-            imageService.downloadImage(uuid);
+            // 创建配置器
+            Configuration config = new Configuration();
+
+            // 创建HDFS filesystem实例对象
+            FileSystem hdfs = FileSystem.get(new URI(HdfsConfig.getMasterIpPort()), config, HdfsConfig.getHdfsUser());
+
+            // 拼接存储路径与文件名的完整路径
+            fileName = HdfsConfig.getHdfsPath() + fileName;
+
+            // 获得文件名 TODO LXJ 文件名获取方式待优化
+            String realFileName = fileName.substring(fileName.indexOf("_") + 1);
+
+            // 以文件名获得文件名的路径
+            Path path = new Path(fileName);
+
+            // 如果文件不存在
+            if (!hdfs.exists(path)) {
+                logger.info(String.format("资源路径[%s]不存在！", path.toString()));
+                map.put("result", "false");
+                map.put("message", "您要下载的资源不存在！！");
+                return map;
+            } else {
+                // 文件输入流
+                FSDataInputStream inputStream = hdfs.open(path);
+
+                // 设置下载文件相关信息---header中只支持ASCII，所以传输的文件名必须是ASCII，
+                // 当文件名为中文时，必须要将该中文转换成ASCII，转换格式，防止中文名丢失。
+                response.setContentType("application/octet-stream");
+                response.setHeader("Content-disposition", "attachment; filename=" + URLEncoder.encode(realFileName,"utf-8"));
+
+                // 文件输出流
+                BufferedOutputStream outputStream = new BufferedOutputStream(response.getOutputStream());
+
+                // 缓存
+                byte[] buffer = new byte[2048];
+
+                int byteRead = 0;
+                while ((byteRead = (inputStream.read(buffer, 0, buffer.length))) != -1) {
+                    outputStream.write(buffer, 0, byteRead);
+                }
+
+                // 刷新缓冲输出流
+                outputStream.flush();
+                inputStream.close();
+                outputStream.close();
+            }
         } catch (Exception e) {
-            e.getStackTrace();
+            logger.error("下载文件异常！", e);
         }
+
+        logger.info(String.format("下载文件[%s]", fileName));
+        map.put("result", "success");
+        return map;
     }
 
 

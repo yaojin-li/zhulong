@@ -72,7 +72,8 @@
                                                    th:onclick="javascript:delInfo(this.getAttribute('data-id'))">删除&nbsp;
                                                 </a>
 
-                                                <a th:href="@{/downloadImage/{uuid}(uuid=${image.uuid})}" href="#">下载&nbsp;
+                                                <a th:data-id="${image.uuid}+'|'+${image.title}"
+                                                   th:onclick="javascript:download(this.getAttribute('data-id'))">下载&nbsp;
                                                 </a>
                                             </td>
                                         </tr>
@@ -177,6 +178,43 @@
                     });
                 });
             }
+        }
+
+
+        function download(obj) {
+            var info = obj.split("|");
+            var imgDownloadInfo = {
+                "uuid": info[0],
+                "title": info[1]
+            };
+            //ajax
+            $(function () {
+                $.ajax({
+                    headers: {
+                        Accept: "application/json; charset=utf-8"
+                    },
+                    type: "post",
+                    async: true,
+                    url: "/downloadImage",
+                    timeout: "3000",
+                    data: {
+                        "imgModInfo": JSON.stringify(imgDownloadInfo)
+                    },
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.result === "success") {
+                            alert("下载成功！");
+                            location.reload();//刷新
+                        } else {
+                            console.log(data);
+                            alert("下载失败！");
+                        }
+                    },
+                    error: function (e) {
+                        console.log(e);
+                    }
+                });
+            });
         }
 
 
