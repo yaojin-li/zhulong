@@ -43,13 +43,11 @@ public class ImagesController {
     public ImageService imageService;
 
     @RequestMapping(value = "/queryImage")
-    public ModelAndView query() throws Exception {
+    public String query(Model model) throws Exception {
         List<Images> imageList = imageService.selectAll();
         logger.info(String.format("查询 images 结果：%s", imageList));
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("images", imageList);
-        modelAndView.setViewName("images.html");
-        return modelAndView;
+        model.addAttribute("images", imageList);
+        return "images";
     }
 
 
@@ -126,12 +124,13 @@ public class ImagesController {
      **/
     @RequestMapping(value = "/upload")
     @ResponseBody
-    public ModelAndView upload(@RequestParam("fileName") MultipartFile file) throws Exception {
-        ModelAndView modelAndView = new ModelAndView();
-        String uploadRes = "";
+    public String upload(@RequestParam("fileName") MultipartFile file, Model model) throws Exception {
+        logger.info("upload file begin...");
+        String uploadRes = "false";
         if (Objects.isNull(file) || file.isEmpty() || Strings.isEmpty(file.getOriginalFilename())) {
-            modelAndView.setViewName("uploadImage.html");
-            return modelAndView;
+            logger.error("upload empty file!");
+            model.addAttribute("uploadResult", uploadRes);
+            return "uploadImage.html";
         }
         String fileName = file.getOriginalFilename();
         fileName = fileName.substring(fileName.lastIndexOf("\\") + 1);
@@ -147,11 +146,9 @@ public class ImagesController {
             uploadRes = "true";
         } catch (Exception e) {
             logger.error("上传图像异常！", e);
-            uploadRes = "false";
         }
-        modelAndView.addObject("uploadResult", uploadRes);
-        modelAndView.setViewName("uploadImage.html");
-        return modelAndView;
+        model.addAttribute("uploadResult", uploadRes);
+        return "uploadImage.html";
     }
 
 
