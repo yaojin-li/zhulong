@@ -1,6 +1,8 @@
 package com.demo.zhulong.controller;
 
 import com.demo.zhulong.base.beans.Images;
+import com.demo.zhulong.common.CommonResponse;
+import com.demo.zhulong.common.enums.ResultCode;
 import com.demo.zhulong.config.HdfsConfig;
 import com.demo.zhulong.service.ImageService;
 import org.apache.directory.api.util.Strings;
@@ -8,13 +10,14 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.tomcat.jni.FileInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.ModelAndView;
 import org.apache.log4j.Logger;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedOutputStream;
@@ -53,27 +56,30 @@ public class ImagesController {
 
     @RequestMapping(value = "/deleteImage", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, Object> delete(HttpServletRequest request, Model model) throws Exception {
+    public Map<String, Object> delete(HttpServletRequest request) throws Exception {
         Map<String, Object> map = new HashMap<>();
+        String delResult = null;
         String uuid = request.getParameter("uuid");
         try {
             // 1. 服务器删除
             int delCounts = imageService.deleteImageByUuid(uuid);
             if (delCounts <= 0) {
                 logger.error(String.format("服务器删除 images 失败！images uuid: %s", uuid));
-                map.put("result", "false");
+                map.put("result", ResultCode.FAIL.getCode());
                 return map;
             } else {
                 logger.info(String.format("服务器删除 images 个数：%s", delCounts));
+                delResult = ResultCode.SUCCESS.getCode();
             }
 
             // 2. TODO HDFS 删除
+//            CommonResponse response = imageService.deleteImageFromHdfs(uuid);
+//            delResult = response.getResult();
 
         } catch (Exception e) {
-            logger.error("删除图片异常", e);
+            logger.error(ResultCode.EXCEPTION.getDesc(), e);
         }
-        model.addAttribute("result", "success");
-        map.put("result", "success");
+        map.put("result", delResult);
         return map;
     }
 
@@ -82,24 +88,24 @@ public class ImagesController {
     @ResponseBody
     public Map<String, Object> modify(HttpServletRequest request) throws Exception {
         String imgModInfo = request.getParameter("imgModInfo");
+        String delResult = null;
         Map<String, Object> map = new HashMap<>();
         try {
             int modCounts = imageService.updateImage(imgModInfo);
             // 修改失败
             if (modCounts <= 0) {
                 logger.error(String.format("服务器修改 images 失败！images: %s", imgModInfo));
-                map.put("result", "false");
+                map.put("result", ResultCode.FAIL.getCode());
                 return map;
             } else {
                 logger.info(String.format("服务器修改 images 个数：%s", modCounts));
+                delResult = ResultCode.SUCCESS.getCode();
             }
-
-            // TODO HDFS 修改
 
         } catch (Exception e) {
             logger.error("修改图像信息异常！", e);
         }
-        map.put("result", "success");
+        map.put("result", delResult);
         return map;
     }
 
@@ -128,9 +134,9 @@ public class ImagesController {
         logger.info("upload file begin...");
         String uploadRes = "false";
         if (Objects.isNull(file) || file.isEmpty() || Strings.isEmpty(file.getOriginalFilename())) {
-            logger.error("upload empty file!");
+            logger.error("上传文件为空！");
             model.addAttribute("uploadResult", uploadRes);
-            return "uploadImage.html";
+            return "uploadImage";
         }
         String fileName = file.getOriginalFilename();
         fileName = fileName.substring(fileName.lastIndexOf("\\") + 1);
@@ -139,18 +145,18 @@ public class ImagesController {
         logger.info(String.format("文件[%s] 大小为[%s]", fileName, size));
 
         String rootPath = "F://test";
+
         try {
             // 保存文件
-            File dest = new File(rootPath + "/" + fileName);
+            File dest = new File(rootPath + File.separator + fileName);
             file.transferTo(dest);
             uploadRes = "true";
         } catch (Exception e) {
             logger.error("上传图像异常！", e);
         }
         model.addAttribute("uploadResult", uploadRes);
-        return "uploadImage.html";
+        return "uploadImage";
     }
-
 
 
     @RequestMapping(value = "/downloadImage", method = RequestMethod.POST)
@@ -196,7 +202,7 @@ public class ImagesController {
                 // 设置下载文件相关信息---header中只支持ASCII，所以传输的文件名必须是ASCII，
                 // 当文件名为中文时，必须要将该中文转换成ASCII，转换格式，防止中文名丢失。
                 response.setContentType("application/octet-stream");
-                response.setHeader("Content-disposition", "attachment; filename=" + URLEncoder.encode(realFileName,"utf-8"));
+                response.setHeader("Content-disposition", "attachment; filename=" + URLEncoder.encode(realFileName, "utf-8"));
 
                 // 文件输出流
                 BufferedOutputStream outputStream = new BufferedOutputStream(response.getOutputStream());
