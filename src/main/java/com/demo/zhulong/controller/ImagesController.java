@@ -136,7 +136,7 @@ public class ImagesController {
         if (Objects.isNull(file) || file.isEmpty() || Strings.isEmpty(file.getOriginalFilename())) {
             logger.error("上传文件为空！");
             model.addAttribute("uploadResult", uploadRes);
-            return "uploadImage";
+            return "uploadImage.html";
         }
         String fileName = file.getOriginalFilename();
         fileName = fileName.substring(fileName.lastIndexOf("\\") + 1);
@@ -155,7 +155,7 @@ public class ImagesController {
             logger.error("上传图像异常！", e);
         }
         model.addAttribute("uploadResult", uploadRes);
-        return "uploadImage";
+        return "uploadImage.html";
     }
 
 

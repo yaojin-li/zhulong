@@ -67,56 +67,6 @@ public class FileRelated {
 	public static final Logger LOGGER = Logger.getLogger(FileRelated.class);
 
 	
-	
-	/**
-	 * @Description: 验证文件类型
-	 * @Author: Administrator
-	 * @Tags: @param type
-	 * @Tags: @return
-	 * @Date: 2017年7月27日 下午2:17:07
-	 */
-	public static boolean fileType(String type){
-
-		System.out.println("+++");
-		System.out.println(type);
-		
-		//文件格式数组
-		String fileTypes[] = {"jpg","jpeg","png","gif","bmp","mp4","avi","mkv"};
-		
-		List<String> list = Arrays.asList(fileTypes);
-		
-		if (list.contains(type)) {
-			return true;
-		}
-		
-		return false;
-		
-	}
-	
-	
-	/**
-	 * @Description: 判断上传文件是否为空
-	 * @Author: Administrator
-	 * @Tags: @param fileName
-	 * @Tags: @return
-	 * @Date: 2017年8月9日 上午10:27:12
-	 * @return: boolean
-	 */
-	public static boolean fileNameIsNull(MultipartFile fileName){
-		
-		System.out.println("判断文件名是否为空。");
-		
-		if (fileName == null || fileName.toString().trim().equals("")) {
-			System.out.println("文件名为空！");
-			return true;
-		}
-		
-		System.out.println("文件名不为空...");
-		return false;
-	}
-	
-	
-	
     /**
      * @Description: 删除目录（文件夹）以及目录下的文件
      * @Author: Administrator
@@ -159,25 +109,7 @@ public class FileRelated {
     }
 
 
-    /**
-     * @Description: 删除单个文件
-     * @Author: Administrator
-     * @Tags: @param sPath 被删除文件的文件名
-     * @Tags: @return
-     * @Date: 2017年8月10日 上午11:21:22
-     * @return: boolean 单个文件删除成功返回true，否则返回false
-     */
-    public static boolean deleteFile(String sPath) {
-        boolean flag = false;
-        File file = new File(sPath);
-        // 路径为文件且不为空则进行删除
-        if (file.isFile() && file.exists()) {
-            file.delete();
-            flag = true;
-        }
-        return flag;
-    }
-    
+
     
     /**
      * @Description: 根据路径删除指定的目录或文件，无论存在与否
