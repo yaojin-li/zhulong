@@ -2,6 +2,7 @@ package com.demo.zhulong.controller;
 
 import com.demo.zhulong.base.beans.Images;
 import com.demo.zhulong.common.CommonResponse;
+import com.demo.zhulong.common.FileRelated;
 import com.demo.zhulong.common.enums.ResultCode;
 import com.demo.zhulong.config.HdfsConfig;
 import com.demo.zhulong.service.ImageService;
@@ -138,6 +139,10 @@ public class ImagesController {
             model.addAttribute("uploadResult", uploadRes);
             return "uploadImage.html";
         }
+
+        // 1. 获取文件信息
+//        res = FileRelated.getUplodInfo(fileName, request);
+
         String fileName = file.getOriginalFilename();
         fileName = fileName.substring(fileName.lastIndexOf("\\") + 1);
 
@@ -147,10 +152,29 @@ public class ImagesController {
         String rootPath = "F://test";
 
         try {
-            // 保存文件
+            // 2. 文件缓存
             File dest = new File(rootPath + File.separator + fileName);
             file.transferTo(dest);
             uploadRes = "true";
+
+//
+//            // 3. 文件上传到HDFS
+//            boolean flag_uploadToHDFS = FileRelated.uploadToHDFS(realSavePath, saveFileName);
+//            if (flag_uploadToHDFS) {
+//                System.out.println("上传HDFS成功。");
+//            }else {
+//                System.out.println("上传HDFS失败。");
+//            }
+//
+//            // 4. 清除本地缓存文件
+//            boolean flag_delAllFile = FileRelated.DeleteFolder(realSavePath);
+//            if (flag_delAllFile) {
+//                System.out.println("清除本地缓存文件成功");
+//            }else {
+//                System.out.println("清除本地缓存文件失败");
+//            }
+
+
         } catch (Exception e) {
             logger.error("上传图像异常！", e);
         }

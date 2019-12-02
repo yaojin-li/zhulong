@@ -134,6 +134,7 @@ public class FileUtils {
      * @return: boolean
      */
     public static boolean deleteDirectory(String sPath) throws Exception {
+
         //如果sPath不以文件分隔符结尾，自动添加文件分隔符
         if (!sPath.endsWith(File.separator)) {
             sPath = sPath + File.separator;
@@ -150,14 +151,20 @@ public class FileUtils {
             //删除子文件
             if (files[i].isFile()) {
                 flag = deleteOneFile(files[i].getAbsolutePath());
-                if (!flag) break;
+                if (!flag) {
+                    break;
+                }
             } //删除子目录
             else {
                 flag = deleteDirectory(files[i].getAbsolutePath());
-                if (!flag) break;
+                if (!flag) {
+                    break;
+                }
             }
         }
-        if (!flag) return false;
+        if (!flag) {
+            return false;
+        }
         //删除当前目录
         if (dirFile.delete()) {
             return true;
