@@ -6,10 +6,13 @@ import com.demo.zhulong.common.FileRelated;
 import com.demo.zhulong.common.enums.ResultCode;
 import com.demo.zhulong.config.HdfsConfig;
 import com.demo.zhulong.service.ImageService;
+import com.demo.zhulong.utils.FileUtils;
+import org.apache.commons.math3.stat.Frequency;
 import org.apache.directory.api.util.Strings;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.FileUtil;
 import org.apache.hadoop.fs.Path;
 import org.apache.tomcat.jni.FileInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +45,9 @@ import java.util.Objects;
 @Controller
 public class ImagesController {
     private static final Logger logger = Logger.getLogger(ImagesController.class);
+
+    private static final String ROOT_PATH = "F://test";
+
 
     @Autowired
     public ImageService imageService;
@@ -131,54 +137,38 @@ public class ImagesController {
      **/
     @RequestMapping(value = "/upload")
     @ResponseBody
-    public String upload(@RequestParam("fileName") MultipartFile file, Model model) throws Exception {
-        logger.info("upload file begin...");
-        String uploadRes = "false";
+    public String upload(@RequestParam("fileName") MultipartFile file, HttpServletRequest request, Model model) throws Exception {
         if (Objects.isNull(file) || file.isEmpty() || Strings.isEmpty(file.getOriginalFilename())) {
             logger.error("上传文件为空！");
-            model.addAttribute("uploadResult", uploadRes);
+            model.addAttribute("uploadResult", ResultCode.FAIL.getCode());
             return "uploadImage.html";
         }
 
         // 1. 获取文件信息
-//        res = FileRelated.getUplodInfo(fileName, request);
-
-        String fileName = file.getOriginalFilename();
-        fileName = fileName.substring(fileName.lastIndexOf("\\") + 1);
-
-        int size = (int) file.getSize();
-        logger.info(String.format("文件[%s] 大小为[%s]", fileName, size));
-
-        String rootPath = "F://test";
+        Map<String, Object> fileInfo = FileUtils.getUplodInfo(file, request);
 
         try {
             // 2. 文件缓存
-            File dest = new File(rootPath + File.separator + fileName);
+            File dest = new File(ROOT_PATH + File.separator + fileInfo.get("title"));
             file.transferTo(dest);
-            uploadRes = "true";
 
-//
-//            // 3. 文件上传到HDFS
-//            boolean flag_uploadToHDFS = FileRelated.uploadToHDFS(realSavePath, saveFileName);
-//            if (flag_uploadToHDFS) {
-//                System.out.println("上传HDFS成功。");
-//            }else {
-//                System.out.println("上传HDFS失败。");
-//            }
-//
-//            // 4. 清除本地缓存文件
-//            boolean flag_delAllFile = FileRelated.DeleteFolder(realSavePath);
-//            if (flag_delAllFile) {
-//                System.out.println("清除本地缓存文件成功");
-//            }else {
-//                System.out.println("清除本地缓存文件失败");
-//            }
+            // 3. 文件上传到HDFS
+            boolean uploadHdfsFlag = FileUtils.uploadToHDFS(dest.getAbsolutePath(), (String) fileInfo.get("uploadFileName"));
+            if (uploadHdfsFlag) {
+                logger.info("上传 HDFS 成功");
+            }else {
+                logger.error(String.format("上传 HDFS 失败，文件：[%s]", (String) fileInfo.get("uploadFileName")));
+            }
 
+            // 4. 清除本地缓存文件
+            FileUtils.deleteDirectory(dest.getAbsolutePath());
 
+            //
+            model.addAttribute("uploadResult", ResultCode.SUCCESS.getCode());
         } catch (Exception e) {
             logger.error("上传图像异常！", e);
+            model.addAttribute("uploadResult", ResultCode.EXCEPTION.getCode());
         }
-        model.addAttribute("uploadResult", uploadRes);
         return "uploadImage.html";
     }
 

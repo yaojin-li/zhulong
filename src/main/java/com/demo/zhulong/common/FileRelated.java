@@ -16,7 +16,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
@@ -47,37 +49,21 @@ public class FileRelated {
     public static final Logger logger = Logger.getLogger(FileRelated.class);
 
 
-
-
-
-
-
     /**
-     * @throws UnsupportedEncodingException
      * @Description: 生成上传文件的文件名。文件名以：uuid+"_"+文件的原始名称
-     * @Author: Administrator
-     * @Tags: @param filename
-     * @Tags: @return
-     * @Date: 2017年8月3日 上午11:26:37
-     * @return: String[]
-     */
-    public static String[] makeFileName(String filename) throws Exception {
-
-//		filename = URLEncoder.encode(filename, "utf-8");
-
-        // 为防止文件覆盖的现象发生，要为上传文件产生一个唯一的文件名
-        String[] strArrays = new String[2];
-        String uuid = UUID.randomUUID().toString();//文件的UUID
-        String uuid_filename = uuid + "_" + filename;//上传文件的唯一文件名
-
-        strArrays[0] = uuid;
-        strArrays[1] = uuid_filename;
-
-        System.out.println("文件UUID相关：");
-        System.out.println(Arrays.toString(strArrays));
-
-        return strArrays;
-
+     * 为防止文件覆盖的现象发生，要为上传文件产生一个唯一的文件名
+     * @Date: 2019/12/3 20:40
+     * @param: filename
+     * @ReturnType: java.lang.String[]
+     **/
+    public static Map<String, String> makeFileName(String filename) throws Exception {
+        Map<String, String> map = new HashMap<>();
+        //文件的UUID
+        String uuid = UUID.randomUUID().toString();
+        map.put("uuid", uuid);
+        //上传文件的唯一文件名
+        map.put("uploadFileName", uuid + "_" + filename);
+        return map;
     }
 
 
@@ -285,120 +271,8 @@ public class FileRelated {
     }
 
 
-    /**
-     * @Description: 将本地缓存文件上传到HDFS
-     * @Author: Administrator
-     * @Tags: @param realSavePath
-     * @Tags: @param saveFileName
-     * @Tags: @throws Exception
-     * @Date: 2017年8月10日 上午9:38:24
-     * @return: void
-     */
-    public static boolean uploadToHDFS(String realSavePath, String saveFileName) throws Exception {
-
-        // 上传成功标识
-        boolean flag = false;
-
-        try {
-            // 得到文件的保存目录
-            String localSrc = realSavePath + "\\" + saveFileName;
-
-            // 上传到HDFS中的指定位置
-            String dst2 = HDFSConstants.HDFSAddress + saveFileName;
-
-            System.out.println("文件在HDFS中的位置：" + dst2);
-
-            // 新建文件输入流
-            InputStream in2 = new BufferedInputStream(new FileInputStream(localSrc));
-
-            // 创建HDFS配置管理类对象，通过配置文件hdfs-site.xml以及core-site.xml，访问HDFS
-            Configuration conf2 = new Configuration();
-
-            // 构造filesystem对象
-            FileSystem fs = FileSystem.get(URI.create(dst2), conf2);
-
-            // 创建输出流
-            OutputStream out2 = fs.create(new Path(dst2), new Progressable() {
-                public void progress() {
-                    System.out.print(".");
-                }
-            });
-
-            // 文件上传到HDFS--（输入流，输出流，缓冲区大小，关闭数据流）
-            IOUtils.copyBytes(in2, out2, 4096, true);
-
-            System.out.println("success");
-
-            flag = true;
-
-            in2.close();
-            in2 = null;
-            out2.close();
-            out2 = null;
-
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        return flag;
-    }
 
 
-
-
-    /**
-     * @Description: 上传图像到本地缓存
-     * @Author: Administrator
-     * @Tags: @param fileName 上传文件名
-     * @Tags: @param saveFileName 保存文件名
-     * @Tags: @return
-     * @Tags: @throws Exception
-     * @Date: 2017年8月10日 下午2:23:00
-     * @return: String[]
-     */
-    public static String[] imgFileCache(MultipartFile fileName, String saveFileName) throws Exception {
-
-        // 上传成功标识
-        String flag_imgFileCache = "false";
-
-        String[] result = new String[2];
-
-        try {
-
-            //图片数据
-            byte[] bytes = fileName.getBytes();
-
-            String realSavePath = FileRelated.makePath(saveFileName, FileRelated.savePath);
-
-            System.out.println("上传文件的保存目录为：" + realSavePath);
-
-            System.out.println("文件缓存的绝对路径为：" + realSavePath + "\\" + saveFileName);
-
-            result[0] = realSavePath;
-
-            File dir = new File(realSavePath);
-
-            //在指定文件夹下保存以含有UUID名称命名的文件
-            File file = new File(dir, saveFileName);
-
-            FileOutputStream outputStream = new FileOutputStream(file);
-
-            outputStream.write(bytes);
-
-            flag_imgFileCache = "true";
-
-            outputStream.close();
-
-            result[1] = flag_imgFileCache;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return result;
-
-    }
 
 
     /**

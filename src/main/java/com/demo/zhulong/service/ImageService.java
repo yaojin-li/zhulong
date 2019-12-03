@@ -78,23 +78,23 @@ public class ImageService {
             if (!fileSystem.exists(saveFilePath)) {
                 logger.error(String.format("HDFS 中文件路径不存在！saveFileName[%s]", saveFileName));
                 response.setMsg("HDFS 中文件路径不存在");
-                response.setResult(ResultCode.NOT_FOUND_FILE_IN_HDFS.getCode());
+                response.setResult(ResultCode.FAIL.getCode());
                 return response;
             }
             // 删除
             boolean delRes = fileSystem.delete(saveFilePath, true);
             if (delRes){
                 response.setMsg("文件删除成功");
-                response.setResult(ResultCode.SUCCESS_DELETE_FILE.getCode());
+                response.setResult(ResultCode.FAIL.getCode());
             }else {
                 logger.error(String.format("文件删除失败！saveFileName[%s]", saveFileName));
                 response.setMsg("文件删除失败");
-                response.setResult(ResultCode.FAIL_DELETE_FILE.getCode());
+                response.setResult(ResultCode.FAIL.getCode());
             }
         } catch (Exception e) {
             logger.error(String.format("HDFS 中删除文件异常！saveFileName[%s]", saveFileName), e);
             response.setMsg("文件删除异常");
-            response.setResult(ResultCode.EXCEPTION_DELETE_FILE.getCode());
+            response.setResult(ResultCode.EXCEPTION.getCode());
         }
         return response;
     }
