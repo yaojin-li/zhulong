@@ -1,17 +1,9 @@
 package com.demo.zhulong.base.dao;
 
 import com.demo.zhulong.base.beans.Videos;
+import tk.mybatis.mapper.common.Mapper;
 
-public interface VideosMapper {
-    int deleteByPrimaryKey(Integer id);
+@org.apache.ibatis.annotations.Mapper
+public interface VideosMapper extends Mapper<Videos> {
 
-    int insert(Videos record);
-
-    int insertSelective(Videos record);
-
-    Videos selectByPrimaryKey(Integer id);
-
-    int updateByPrimaryKeySelective(Videos record);
-
-    int updateByPrimaryKey(Videos record);
 }

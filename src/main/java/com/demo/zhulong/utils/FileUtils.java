@@ -39,6 +39,8 @@ import java.util.*;
 public class FileUtils {
     public static final Logger logger = Logger.getLogger(FileUtils.class);
 
+    private static final String ROOT_PATH = "E://test";
+
     /**
      * @Description: 判断文件类型
      * @Date: 2019/11/19 23:17
@@ -144,7 +146,7 @@ public class FileUtils {
      * @Date: 2019/12/3 20:49
      * @param: fileName 文件名
      * @param: request http 请求
-     * @ReturnType: Map<String, Object>
+     * @ReturnType: Map<String       ,               Object>
      **/
     public static Map<String, Object> getUplodInfo(MultipartFile fileName, HttpServletRequest request) throws Exception {
         Map<String, Object> resMap = new HashMap<>();
@@ -172,86 +174,66 @@ public class FileUtils {
         //文件相关信息 + 输入信息
         resMap.put("title", title);
         resMap.put("type", type);
-        resMap.put("user", request.getParameter("user"));
-        resMap.put("description", request.getParameter("description"));
+        resMap.put("uploader", request.getParameter("uploader"));
         resMap.put("remark", request.getParameter("remark"));
         resMap.put("size", fileName.getSize());
-        resMap.put("create_time", new Timestamp(System.currentTimeMillis()));
         resMap.put("position", HdfsConfig.getHdfsPath());
 
         Map<String, String> map = FileRelated.makeFileName(title);
         resMap.put("uuid", map.get("uuid"));
-        resMap.put("uploadFileName", map.get("uploadFileName"));
+        resMap.put("uploadTitle", map.get("uploadTitle"));
         return resMap;
     }
 
-    /**
-     * @Description: 将本地缓存文件上传到HDFS
-     * @Author: Administrator
-     * @Tags: @param realSavePath
-     * @Tags: @param saveFileName
-     * @Tags: @throws Exception
-     * @Date: 2017年8月10日 上午9:38:24
-     * @return: void
-     */
-    public static boolean uploadToHDFS(String realSavePath, String saveFileName) throws Exception {
 
-        // 上传成功标识
-        boolean flag = false;
+    /**
+     * @Description: 将本地缓存文件上传到 HDFS
+     * @Date: 2019/12/3 19:52
+     * @param: realSavePath 服务器缓存文件的路径
+     * @param: saveFileName 上传文件名称
+     * @ReturnType: boolean
+     **/
+    public static boolean uploadToHdfs(String realSavePath, String saveFileName) throws Exception {
+        boolean uploadFlag = false;
+
+        // 得到文件的保存目录
+        String localSrc = realSavePath + "\\" + saveFileName;
+
+        // 上传到HDFS中的指定位置
+        String hdfsPosition = HdfsConfig.getMasterAddress() + saveFileName;
+
+        // 新建文件输入流
+        InputStream inputStream = new BufferedInputStream(new FileInputStream(localSrc));
+
+        // 创建HDFS配置管理类对象，通过配置文件hdfs-site.xml以及core-site.xml，访问HDFS
+        Configuration configuration = new Configuration();
+
+        // 构造filesystem对象
+        FileSystem fileSystem = FileSystem.get(URI.create(hdfsPosition), configuration);
+
+        // 创建输出流
+        OutputStream outputStream = fileSystem.create(new Path(hdfsPosition), new Progressable() {
+            public void progress() {
+                System.out.print(".");
+            }
+        });
 
         try {
-            // 得到文件的保存目录
-            String localSrc = realSavePath + "\\" + saveFileName;
-
-            // 上传到HDFS中的指定位置
-            String dst2 = HDFSConstants.HDFSAddress + saveFileName;
-
-            System.out.println("文件在HDFS中的位置：" + dst2);
-
-            // 新建文件输入流
-            InputStream in2 = new BufferedInputStream(new FileInputStream(localSrc));
-
-            // 创建HDFS配置管理类对象，通过配置文件hdfs-site.xml以及core-site.xml，访问HDFS
-            Configuration conf2 = new Configuration();
-
-            // 构造filesystem对象
-            FileSystem fs = FileSystem.get(URI.create(dst2), conf2);
-
-            // 创建输出流
-            OutputStream out2 = fs.create(new Path(dst2), new Progressable() {
-                public void progress() {
-                    System.out.print(".");
-                }
-            });
-
             // 文件上传到HDFS--（输入流，输出流，缓冲区大小，关闭数据流）
-            IOUtils.copyBytes(in2, out2, 4096, true);
-
-            System.out.println("success");
-
-            flag = true;
-
-            in2.close();
-            in2 = null;
-            out2.close();
-            out2 = null;
-
+            IOUtils.copyBytes(inputStream, outputStream, 4096, true);
+            uploadFlag = true;
         } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.error("文件上传到 HDFS 异常", e);
+        } finally {
+            inputStream.close();
+            outputStream.close();
         }
-
-        return flag;
+        return uploadFlag;
     }
 
 
-
-
-
-
-
     /**
-     * @Description: 上传图像到本地缓存
+     * @Description: 上传图像到本地缓存(未用)
      * @Author: Administrator
      * @Tags: @param fileName 上传文件名
      * @Tags: @param saveFileName 保存文件名
@@ -304,11 +286,22 @@ public class FileUtils {
     }
 
 
-
-
-
-
-
+    /**
+     * @Description: 本地缓存
+     * @Date: 2019/12/4 11:02
+     * @param: file 缓存文件
+     * @param: title 缓存文件名称
+     * @ReturnType: 缓存文件绝对路径
+     **/
+    public static String fileCache(MultipartFile file, String title) throws Exception {
+        File dest = new File(ROOT_PATH + File.separator + title);
+        try {
+            file.transferTo(dest);
+        } catch (Exception e) {
+            logger.error("文件缓存异常", e);
+        }
+        return dest.getAbsolutePath();
+    }
 
 
 }

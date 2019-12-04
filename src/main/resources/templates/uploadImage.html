@@ -35,19 +35,9 @@
                                     <div class="col-lg-6">
                                         <form enctype="multipart/form-data" action="/upload" method="POST">
                                             <div class="form-group">
-                                                <label>用户名</label>
+                                                <label>上传用户</label>
                                                 <input class="form-control" type="text"
-                                                       placeholder="user name" name="user">
-                                            </div>
-                                            <div class="form-group">
-                                                <label>图像名</label>
-                                                <input class="form-control" placeholder="image name"
-                                                       type="text" name="new_title">
-                                            </div>
-                                            <div class="form-group">
-                                                <label>图像描述</label>
-                                                <input class="form-control" placeholder="image description"
-                                                       type="text" name="description">
+                                                       placeholder="user name" name="uploader">
                                             </div>
                                             <div class="form-group">
                                                 <label>文件上传</label>
@@ -87,8 +77,14 @@
 
     <script type="text/javascript" th:inline="javascript">
         var uploadResult = [[${uploadResult}]];
-        alert(uploadResult);
-
+        if (typeof(uploadResult) === 'string') {
+            if (uploadResult === '0000'){
+                alert("上传成功！");
+                window.location.href = 'uploadImage';
+            } else {
+                alert("上传失败！");
+            }
+        }
     </script>
 
 

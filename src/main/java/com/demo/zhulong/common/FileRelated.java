@@ -62,7 +62,7 @@ public class FileRelated {
         String uuid = UUID.randomUUID().toString();
         map.put("uuid", uuid);
         //上传文件的唯一文件名
-        map.put("uploadFileName", uuid + "_" + filename);
+        map.put("uploadTitle", uuid + "_" + filename);
         return map;
     }
 

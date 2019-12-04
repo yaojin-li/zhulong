@@ -2,22 +2,20 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.demo.zhulong.base.dao.ImagesMapper" >
   <resultMap id="BaseResultMap" type="com.demo.zhulong.base.beans.Images" >
-    <id column="ID" property="id" jdbcType="INTEGER" />
-    <result column="TITLE" property="title" jdbcType="VARCHAR" />
-    <result column="NEW_TITLE" property="newTitle" jdbcType="VARCHAR" />
-    <result column="TYPE" property="type" jdbcType="VARCHAR" />
-    <result column="SIZE" property="size" jdbcType="INTEGER" />
-    <result column="POSITION" property="position" jdbcType="VARCHAR" />
-    <result column="UUID" property="uuid" jdbcType="VARCHAR" />
-    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
-    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
-    <result column="UPLOADER" property="uploader" jdbcType="VARCHAR" />
-    <result column="DESCRIPTION" property="description" jdbcType="VARCHAR" />
-    <result column="REMARK" property="remark" jdbcType="VARCHAR" />
-    <result column="NOTE1" property="note1" jdbcType="VARCHAR" />
-    <result column="NOTE2" property="note2" jdbcType="VARCHAR" />
+      <id column="ID" property="id" jdbcType="INTEGER" />
+      <result column="TITLE" property="title" jdbcType="VARCHAR" />
+      <result column="TYPE" property="type" jdbcType="VARCHAR" />
+      <result column="SIZE" property="size" jdbcType="BIGINT" />
+      <result column="POSITION" property="position" jdbcType="VARCHAR" />
+      <result column="UUID" property="uuid" jdbcType="VARCHAR" />
+      <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+      <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+      <result column="UPLOADER" property="uploader" jdbcType="VARCHAR" />
+      <result column="REMARK" property="remark" jdbcType="VARCHAR" />
+      <result column="NOTE1" property="note1" jdbcType="VARCHAR" />
+      <result column="NOTE2" property="note2" jdbcType="VARCHAR" />
+      <result column="UPLOAD_TITLE" jdbcType="VARCHAR" property="uploadTitle" />
   </resultMap>
-
 
     <update id="updateImgByUuid" parameterType="com.demo.zhulong.base.beans.Images">
         update images
@@ -25,14 +23,11 @@
             <if test="title != null">
                 TITLE = #{title,jdbcType=VARCHAR},
             </if>
-            <if test="newTitle != null">
-                NEW_TITLE = #{newTitle,jdbcType=VARCHAR},
-            </if>
             <if test="type != null">
                 TYPE = #{type,jdbcType=VARCHAR},
             </if>
             <if test="size != null">
-                SIZE = #{size,jdbcType=INTEGER},
+                SIZE = #{size,jdbcType=BIGINT},
             </if>
             <if test="position != null">
                 POSITION = #{position,jdbcType=VARCHAR},
@@ -46,9 +41,6 @@
             <if test="uploader != null">
                 UPLOADER = #{uploader,jdbcType=VARCHAR},
             </if>
-            <if test="description != null">
-                DESCRIPTION = #{description,jdbcType=VARCHAR},
-            </if>
             <if test="remark != null">
                 REMARK = #{remark,jdbcType=VARCHAR},
             </if>
@@ -58,8 +50,15 @@
             <if test="note2 != null">
                 NOTE2 = #{note2,jdbcType=VARCHAR},
             </if>
+            <if test="uploadTitle != null">
+                UPLOAD_TITLE,
+            </if>
         </set>
         where UUID = #{uuid,jdbcType=VARCHAR}
     </update>
+
+    <delete id="deleteImgByUuid" parameterType="java.lang.String" >
+        DELETE FROM images WHERE UUID = #{uuid, jdbcType=VARCHAR}
+    </delete>
 
 </mapper>

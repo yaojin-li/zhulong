@@ -4,6 +4,8 @@ import com.demo.zhulong.controller.HelloWorldController;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -36,6 +38,13 @@ public class ZhuLongApplicationTests {
 
     @Test
     public void contextLoads() {
+    }
+
+
+    private static Logger logger = LoggerFactory.getLogger(ZhuLongApplicationTests.class);
+    @Test
+    public void logTest(){
+        logger.info("测试打印日志：{}", System.currentTimeMillis());
     }
 
 }

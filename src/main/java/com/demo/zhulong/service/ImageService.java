@@ -49,16 +49,25 @@ public class ImageService {
     /**
      * @Description: 插入图像
      */
-//	public int insertImage(ImageCustom imageCustom) throws Exception;
+	public int insertImage(Map<String, Object> imageInfo) throws Exception{
+	    Images image = new Images();
+	    image.setTitle((String) imageInfo.get("title"));
+	    image.setType((String) imageInfo.get("type"));
+        image.setSize((Long) imageInfo.get("size"));
+        image.setPosition((String) imageInfo.get("position"));
+        image.setUuid((String) imageInfo.get("uuid"));
+        image.setUploader((String) imageInfo.get("uploader"));
+        image.setRemark((String) imageInfo.get("remark"));
+        image.setUploadTitle((String) imageInfo.get("uploadTitle"));
+	    return imagesMapper.insertSelective(image);
+    }
 
 
     /**
      * @Description: 数据库删除图像
      */
     public int deleteImageByUuid(String uuid) throws Exception {
-        Images images = new Images();
-        images.setUuid(uuid);
-        return imagesMapper.delete(images);
+        return imagesMapper.deleteImgByUuid(uuid);
     }
 
     /**
@@ -104,18 +113,16 @@ public class ImageService {
     /**
      * @Description: 更新图像信息（仅限服务器修改，暂时不支持 HDFS 中修改）
      */
-    public int updateImage(String imgModInfo) throws Exception {
-        JSONObject imgModJson = JSONObject.parseObject(imgModInfo);
-        String uuid = (String) imgModJson.get("uuid");
-        String title = (String) imgModJson.get("title");
-        String uploader = (String) imgModJson.get("uploader");
+    public int updateImage(JSONObject imgModInfo) throws Exception {
+        String uuid = (String) imgModInfo.get("uuid");
+        String title = (String) imgModInfo.get("title");
+        String uploader = (String) imgModInfo.get("uploader");
 
         Images images = new Images();
         images.setUuid(uuid);
         images.setTitle(title);
         images.setUploader(uploader);
         images.setUpdateTime(new Date());
-
         return imagesMapper.updateImgByUuid(images);
     }
 

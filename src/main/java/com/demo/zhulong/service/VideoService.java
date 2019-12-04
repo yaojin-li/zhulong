@@ -27,27 +27,8 @@ public class VideoService {
     private VideosMapper videosMapper;
 
     public List<Videos> selectAll() throws Exception {
-        List<Videos> result = new ArrayList<>();
-        result.add(videosMapper.selectByPrimaryKey(1));
-        return result;
+        return videosMapper.selectAll();
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     /**
