@@ -1,9 +1,6 @@
 package com.demo.zhulong.utils;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.demo.zhulong.common.FileRelated;
-import com.demo.zhulong.common.HDFSConstants;
 import com.demo.zhulong.common.enums.AudioEnum;
 import com.demo.zhulong.common.enums.DocEnum;
 import com.demo.zhulong.common.enums.ImageEnum;
@@ -24,7 +21,6 @@ import java.net.URI;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
-import java.sql.Timestamp;
 import java.util.*;
 
 /**
@@ -40,6 +36,8 @@ public class FileUtils {
     public static final Logger logger = Logger.getLogger(FileUtils.class);
 
     private static final String ROOT_PATH = "E://test";
+
+    private static final String UPLOAD_HDFS_ADDRESS = HdfsConfig.getSlaveOneAddress();
 
     /**
      * @Description: 判断文件类型
@@ -200,7 +198,7 @@ public class FileUtils {
         String localSrc = realSavePath + "\\" + saveFileName;
 
         // 上传到HDFS中的指定位置
-        String hdfsPosition = HdfsConfig.getMasterAddress() + saveFileName;
+        String hdfsPosition = UPLOAD_HDFS_ADDRESS + saveFileName;
 
         // 新建文件输入流
         InputStream inputStream = new BufferedInputStream(new FileInputStream(localSrc));

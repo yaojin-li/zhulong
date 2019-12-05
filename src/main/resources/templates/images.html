@@ -43,6 +43,7 @@
                                             <th>CreateTime</th>
                                             <th>UpdateTime</th>
                                             <th>Uploader</th>
+                                            <th>UploadTitle</th>
                                             <th>Operate</th>
                                         </tr>
                                         </thead>
@@ -60,6 +61,7 @@
                                             <td th:text="${#dates.format(image.updateTime, 'yyyy-MM-dd')}">
                                             </td>
                                             <td th:text="${image.uploader}"></td>
+                                            <td th:text="${image.uploadTitle}"></td>
                                             <td>
                                                 <span th:text="${modResult}"></span>
 
@@ -72,7 +74,7 @@
                                                    th:onclick="javascript:delInfo(this.getAttribute('data-id'))">删除&nbsp;
                                                 </a>
 
-                                                <a th:data-id="${image.uuid}+'|'+${image.title}"
+                                                <a th:data-id="${image.uploadTitle}" href="#"
                                                    th:onclick="javascript:download(this.getAttribute('data-id'))">下载&nbsp;
                                                 </a>
                                             </td>
@@ -160,11 +162,9 @@
         }
 
 
-        function download(obj) {
-            var info = obj.split("|");
+        function download(uploadTitle) {
             var params = {
-                "uuid": info[0],
-                "title": info[1]
+                "uploadTitle": uploadTitle
             };
             var param = {params: JSON.stringify(params)};
             $.post('/downloadImage', param, function (data) {

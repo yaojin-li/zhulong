@@ -89,7 +89,6 @@ public class ImagesController {
     @RequestMapping(value = "/modifyImage", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> modify(HttpServletRequest request) throws Exception {
-
         String params = request.getParameter("params");
         JSONObject paramsJson = JSONObject.parseObject(params);
 
@@ -148,21 +147,21 @@ public class ImagesController {
             // 2. 文件缓存
             String absolutePath = FileUtils.fileCache(file, (String) fileInfo.get("title"));
 
-//            // 3. 文件上传到 HDFS
-//            boolean uploadHdfsFlag = FileUtils.uploadToHdfs(absolutePath, (String) fileInfo.get("uploadFileName"));
-//            if (uploadHdfsFlag) {
-//                logger.info("上传 HDFS 成功");
-//            }else {
-//                logger.error(String.format("上传 HDFS 失败，文件：[%s]", (String) fileInfo.get("uploadFileName")));
-//            }
-
-            // 4. 数据信息插入数据库
-            int insertCount = imageService.insertImage(fileInfo);
-            if (insertCount <= 0) {
-                logger.error(String.format("上传图像，数据信息插入数据库失败！文件信息：[%s]", JSONObject.toJSON(fileInfo)));
-            } else {
-                logger.info("上传图像，数据信息插入数据库成功！");
+            // 3. 文件上传到 HDFS
+            boolean uploadHdfsFlag = FileUtils.uploadToHdfs(absolutePath, (String) fileInfo.get("uploadFileName"));
+            if (uploadHdfsFlag) {
+                logger.info("上传 HDFS 成功");
+            }else {
+                logger.error(String.format("上传 HDFS 失败，文件：[%s]", (String) fileInfo.get("uploadFileName")));
             }
+
+//            // 4. 数据信息插入数据库
+//            int insertCount = imageService.insertImage(fileInfo);
+//            if (insertCount <= 0) {
+//                logger.error(String.format("上传图像，数据信息插入数据库失败！文件信息：[%s]", JSONObject.toJSON(fileInfo)));
+//            } else {
+//                logger.info("上传图像，数据信息插入数据库成功！");
+//            }
 
             // 5. 清除本地缓存文件
 //            FileUtils.deleteDirectory(absolutePath);
@@ -180,14 +179,13 @@ public class ImagesController {
     @ResponseBody
     public Map<String, Object> downloadImage(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> map = new HashMap<>();
-        logger.info("begin download image...");
         request.setCharacterEncoding("utf-8");
         //
-        String imgUuid = request.getParameter("uuid");
-        String title = request.getParameter("title");
+        String params = request.getParameter("params");
+        JSONObject paramsJson = JSONObject.parseObject(params);
 
         // HDFS 中存储的文件名
-        String fileName = imgUuid + "_" + title;
+        String fileName = (String) paramsJson.get("uploadTitle");
         logger.info(String.format("download image is:[%s]", fileName));
 
         try {
@@ -195,7 +193,7 @@ public class ImagesController {
             Configuration config = new Configuration();
 
             // 创建HDFS filesystem实例对象
-            FileSystem hdfs = FileSystem.get(new URI(HdfsConfig.getMasterIpPort()), config, HdfsConfig.getHdfsUser());
+            FileSystem hdfs = FileSystem.get(new URI(HdfsConfig.getSlaveOneIpPort()), config, HdfsConfig.getHdfsUser());
 
             // 拼接存储路径与文件名的完整路径
             fileName = HdfsConfig.getHdfsPath() + fileName;
@@ -208,7 +206,7 @@ public class ImagesController {
 
             // 如果文件不存在
             if (!hdfs.exists(path)) {
-                logger.info(String.format("资源路径[%s]不存在！", path.toString()));
+                logger.error(String.format("资源路径[%s]不存在！", path.toString()));
                 map.put("result", "false");
                 map.put("message", "您要下载的资源不存在！！");
                 return map;
@@ -239,6 +237,8 @@ public class ImagesController {
             }
         } catch (Exception e) {
             logger.error("下载文件异常！", e);
+        }finally {
+
         }
 
         logger.info(String.format("下载文件[%s]", fileName));
