@@ -144,15 +144,15 @@ public class ImagesController {
         Map<String, Object> fileInfo = FileUtils.getUplodInfo(file, request);
 
         try {
-            // 2. 文件缓存
-            String absolutePath = FileUtils.fileCache(file, (String) fileInfo.get("title"));
+            // 2. 以上传文件的名称（加uuid）缓存文件
+            String absolutePath = FileUtils.fileCache(file, (String) fileInfo.get("uploadTitle"));
 
             // 3. 文件上传到 HDFS
-            boolean uploadHdfsFlag = FileUtils.uploadToHdfs(absolutePath, (String) fileInfo.get("uploadFileName"));
+            boolean uploadHdfsFlag = FileUtils.uploadToHdfs(absolutePath, (String) fileInfo.get("uploadTitle"));
             if (uploadHdfsFlag) {
                 logger.info("上传 HDFS 成功");
             }else {
-                logger.error(String.format("上传 HDFS 失败，文件：[%s]", (String) fileInfo.get("uploadFileName")));
+                logger.error(String.format("上传 HDFS 失败，文件：[%s]", (String) fileInfo.get("uploadTitle")));
             }
 
 //            // 4. 数据信息插入数据库

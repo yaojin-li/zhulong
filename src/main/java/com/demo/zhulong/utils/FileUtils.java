@@ -12,7 +12,8 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IOUtils;
 import org.apache.hadoop.util.Progressable;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,11 +34,11 @@ import java.util.*;
  * @Contact: lixj_zj@163.com
  **/
 public class FileUtils {
-    public static final Logger logger = Logger.getLogger(FileUtils.class);
+    public static final Logger logger = LoggerFactory.getLogger(FileUtils.class);
 
-    private static final String ROOT_PATH = "E://test";
+    private static final String ROOT_PATH = "F://test";
 
-    private static final String UPLOAD_HDFS_ADDRESS = HdfsConfig.getSlaveOneAddress();
+    private static final String UPLOAD_HDFS_ADDRESS = HdfsConfig.getMasterAddress();
 
     /**
      * @Description: 判断文件类型
@@ -194,26 +195,21 @@ public class FileUtils {
     public static boolean uploadToHdfs(String realSavePath, String saveFileName) throws Exception {
         boolean uploadFlag = false;
 
-        // 得到文件的保存目录
-        String localSrc = realSavePath + "\\" + saveFileName;
-
         // 上传到HDFS中的指定位置
         String hdfsPosition = UPLOAD_HDFS_ADDRESS + saveFileName;
 
         // 新建文件输入流
-        InputStream inputStream = new BufferedInputStream(new FileInputStream(localSrc));
+        InputStream inputStream = new BufferedInputStream(new FileInputStream(realSavePath));
 
-        // 创建HDFS配置管理类对象，通过配置文件hdfs-site.xml以及core-site.xml，访问HDFS
+        // 创建HDFS配置管理类对象，访问HDFS
         Configuration configuration = new Configuration();
 
-        // 构造filesystem对象
-        FileSystem fileSystem = FileSystem.get(URI.create(hdfsPosition), configuration);
+        // 构造filesystem对象。第三个参数设置Linux中Hadoop集群的user
+        FileSystem fileSystem = FileSystem.get(URI.create(hdfsPosition), configuration, HdfsConfig.getHdfsUser());
 
         // 创建输出流
         OutputStream outputStream = fileSystem.create(new Path(hdfsPosition), new Progressable() {
-            public void progress() {
-                System.out.print(".");
-            }
+            public void progress() {}
         });
 
         try {
