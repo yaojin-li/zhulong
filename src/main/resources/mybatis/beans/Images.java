@@ -7,9 +7,11 @@ public class Images {
 
     private String title;
 
+    private String newTitle;
+
     private String type;
 
-    private Long size;
+    private Integer size;
 
     private String position;
 
@@ -21,13 +23,13 @@ public class Images {
 
     private String uploader;
 
+    private String description;
+
     private String remark;
 
     private String note1;
 
     private String note2;
-
-    private String uploadTitle;
 
     public Integer getId() {
         return id;
@@ -45,6 +47,14 @@ public class Images {
         this.title = title == null ? null : title.trim();
     }
 
+    public String getNewTitle() {
+        return newTitle;
+    }
+
+    public void setNewTitle(String newTitle) {
+        this.newTitle = newTitle == null ? null : newTitle.trim();
+    }
+
     public String getType() {
         return type;
     }
@@ -53,11 +63,11 @@ public class Images {
         this.type = type == null ? null : type.trim();
     }
 
-    public Long getSize() {
+    public Integer getSize() {
         return size;
     }
 
-    public void setSize(Long size) {
+    public void setSize(Integer size) {
         this.size = size;
     }
 
@@ -101,6 +111,14 @@ public class Images {
         this.uploader = uploader == null ? null : uploader.trim();
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description == null ? null : description.trim();
+    }
+
     public String getRemark() {
         return remark;
     }
@@ -123,13 +141,5 @@ public class Images {
 
     public void setNote2(String note2) {
         this.note2 = note2 == null ? null : note2.trim();
-    }
-
-    public String getUploadTitle() {
-        return uploadTitle;
-    }
-
-    public void setUploadTitle(String uploadTitle) {
-        this.uploadTitle = uploadTitle == null ? null : uploadTitle.trim();
     }
 }
