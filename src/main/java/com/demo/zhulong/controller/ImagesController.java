@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedOutputStream;
+import java.io.*;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.util.HashMap;
@@ -151,17 +151,17 @@ public class ImagesController {
             boolean uploadHdfsFlag = FileUtils.uploadToHdfs(absolutePath, (String) fileInfo.get("uploadTitle"));
             if (uploadHdfsFlag) {
                 logger.info("上传 HDFS 成功");
-            }else {
+            } else {
                 logger.error(String.format("上传 HDFS 失败，文件：[%s]", (String) fileInfo.get("uploadTitle")));
             }
 
-//            // 4. 数据信息插入数据库
-//            int insertCount = imageService.insertImage(fileInfo);
-//            if (insertCount <= 0) {
-//                logger.error(String.format("上传图像，数据信息插入数据库失败！文件信息：[%s]", JSONObject.toJSON(fileInfo)));
-//            } else {
-//                logger.info("上传图像，数据信息插入数据库成功！");
-//            }
+            // 4. 数据信息插入数据库
+            int insertCount = imageService.insertImage(fileInfo);
+            if (insertCount <= 0) {
+                logger.error(String.format("上传图像，数据信息插入数据库失败！文件信息：[%s]", JSONObject.toJSON(fileInfo)));
+            } else {
+                logger.info("上传图像，数据信息插入数据库成功！");
+            }
 
             // 5. 清除本地缓存文件
 //            FileUtils.deleteDirectory(absolutePath);
@@ -175,25 +175,29 @@ public class ImagesController {
     }
 
 
-    @RequestMapping(value = "/downloadImage", method = RequestMethod.POST)
-    @ResponseBody
-    public Map<String, Object> downloadImage(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map<String, Object> map = new HashMap<>();
+    /**
+     * @Description: 下载图像
+     * @Date: 2019/12/8 11:55
+     * @param: request
+     * @param: response
+     * @ReturnType: java.util.Map<java.lang.String, java.lang.Object>
+     **/
+    @RequestMapping(value = "/downloadImage")
+    public void downloadImage(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request.setCharacterEncoding("utf-8");
-        //
-        String params = request.getParameter("params");
-        JSONObject paramsJson = JSONObject.parseObject(params);
-
         // HDFS 中存储的文件名
-        String fileName = (String) paramsJson.get("uploadTitle");
+        String fileName = request.getParameter("uploadTitle");
         logger.info(String.format("download image is:[%s]", fileName));
 
+
+        FSDataInputStream inputStream = null;
+        BufferedOutputStream outputStream = null;
         try {
             // 创建配置器
             Configuration config = new Configuration();
 
             // 创建HDFS filesystem实例对象
-            FileSystem hdfs = FileSystem.get(new URI(HdfsConfig.getSlaveOneIpPort()), config, HdfsConfig.getHdfsUser());
+            FileSystem hdfs = FileSystem.get(new URI(HdfsConfig.getMasterIpPort()), config, HdfsConfig.getHdfsUser());
 
             // 拼接存储路径与文件名的完整路径
             fileName = HdfsConfig.getHdfsPath() + fileName;
@@ -207,47 +211,36 @@ public class ImagesController {
             // 如果文件不存在
             if (!hdfs.exists(path)) {
                 logger.error(String.format("资源路径[%s]不存在！", path.toString()));
-                map.put("result", "false");
-                map.put("message", "您要下载的资源不存在！！");
-                return map;
             } else {
                 // 文件输入流
-                FSDataInputStream inputStream = hdfs.open(path);
+                inputStream = hdfs.open(path);
 
                 // 设置下载文件相关信息---header中只支持ASCII，所以传输的文件名必须是ASCII，
                 // 当文件名为中文时，必须要将该中文转换成ASCII，转换格式，防止中文名丢失。
-                response.setContentType("application/octet-stream");
+                response.setContentType(request.getServletContext().getMimeType(realFileName));
                 response.setHeader("Content-disposition", "attachment; filename=" + URLEncoder.encode(realFileName, "utf-8"));
 
                 // 文件输出流
-                BufferedOutputStream outputStream = new BufferedOutputStream(response.getOutputStream());
-
+                outputStream = new BufferedOutputStream(response.getOutputStream());
                 // 缓存
                 byte[] buffer = new byte[2048];
 
                 int byteRead = 0;
-                while ((byteRead = (inputStream.read(buffer, 0, buffer.length))) != -1) {
+                while ((byteRead = (inputStream.read(buffer))) != -1) {
                     outputStream.write(buffer, 0, byteRead);
                 }
 
                 // 刷新缓冲输出流
                 outputStream.flush();
-                inputStream.close();
-                outputStream.close();
+
             }
-        } catch (Exception e) {
-            logger.error("下载文件异常！", e);
+        }catch (Exception e){
+            logger.error("图像下载异常！", e);
         }finally {
-
+            inputStream.close();
+            outputStream.close();
         }
-
-        logger.info(String.format("下载文件[%s]", fileName));
-        map.put("result", "success");
-        return map;
     }
-
 }
-
-
 
 
