@@ -35,7 +35,7 @@ public class HdfsConfig {
 
     /**
      * 以 hdfs:// + IP地址 + 端口号 的形式拼成预览文件在 HDFS 中的最终地址
-     * eg: hdfs://192.168.2.0:9000
+     * eg: hdfs://192.168.1.14:9000
      */
     private static final String MASTER_IP_PORT = "hdfs://" + MASTER_IP + ":" + MASTER_PORT;
 
@@ -44,7 +44,7 @@ public class HdfsConfig {
 
     /**
      * 以 hdfs:// + IP地址 + 端口号 + HDFS 中存储目录的形式拼成上传文件在 HDFS 中的最终存储地址
-     * eg: hdfs://192.168.2.0:9000/user/lxj/input/testfile2/
+     * eg: hdfs://192.168.1.14:9000/user/hadoop/input/
      */
     private static final String MASTER_ADDRESS = "hdfs://" + MASTER_IP + ":" + MASTER_PORT + BROWSE_DIRECTORY;
 

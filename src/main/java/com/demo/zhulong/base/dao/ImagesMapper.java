@@ -8,6 +8,6 @@ public interface ImagesMapper extends Mapper<Images>{
 
     int updateImgByUuid(Images record);
 
-    int deleteImgByUuid(String uuid);
+    int deleteImgByUploadTitle(String uploadTitle);
 
 }

@@ -63,14 +63,12 @@
                                             <td th:text="${image.uploader}"></td>
                                             <td th:text="${image.uploadTitle}"></td>
                                             <td>
-                                                <span th:text="${modResult}"></span>
-
                                                 <a th:data-id="${image.uuid}+'|'+${image.title}+'|'+${image.uploader}"
                                                    data-toggle="modal" href="#logoutModal"
                                                    th:onclick="javascript:modInfo(this.getAttribute('data-id'))">修改&nbsp;
                                                 </a>
 
-                                                <a th:data-id="${image.uuid}" data-toggle="modal" href="#"
+                                                <a th:data-id="${image.uploadTitle}" data-toggle="modal" href="#"
                                                    th:onclick="javascript:delInfo(this.getAttribute('data-id'))">删除&nbsp;
                                                 </a>
 
@@ -144,10 +142,10 @@
             }
         });
 
-        function delInfo(uuid) {
+        function delInfo(uploadTitle) {
             if (confirm("确认要删除？")) {
                 var params = {
-                    "uuid": uuid
+                    "uploadTitle": uploadTitle
                 };
                 var param = {params: JSON.stringify(params)};
                 $.post('/deleteImage', param, function (data) {
@@ -163,7 +161,7 @@
 
 
         function downloadInfo(uploadTitle) {
-            window.location.href="/downloadImage?uploadTitle=" + uploadTitle;
+            window.location.href = "/downloadImage?uploadTitle=" + uploadTitle;
         }
 
         function modInfo(obj) {

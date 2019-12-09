@@ -3,6 +3,7 @@ package com.demo.zhulong.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.demo.zhulong.base.beans.Images;
+import com.demo.zhulong.common.CommonResponse;
 import com.demo.zhulong.common.enums.ResultCode;
 import com.demo.zhulong.config.HdfsConfig;
 import com.demo.zhulong.service.ImageService;
@@ -46,6 +47,13 @@ public class ImagesController {
     @Autowired
     public ImageService imageService;
 
+
+    /**
+     * @Description: 查询图像
+     * @Date: 2019/12/9 15:21
+     * @param: model
+     * @ReturnType: java.lang.String
+     **/
     @RequestMapping(value = "/queryImage")
     public String query(Model model) throws Exception {
         List<Images> imageList = imageService.selectAll();
@@ -54,38 +62,54 @@ public class ImagesController {
     }
 
 
+    /**
+     * @Description: 删除图像（服务器 + HDFS）
+     * @Date: 2019/12/9 15:49
+     * @param: request
+     * @ReturnType: java.util.Map<java.lang.String,java.lang.Object>
+     **/
     @RequestMapping(value = "/deleteImage", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> delete(HttpServletRequest request) throws Exception {
         Map<String, Object> map = new HashMap<>();
-        String delResult = null;
         String params = request.getParameter("params");
         JSONObject paramsJson = JSONObject.parseObject(params);
-        String uuid = (String) paramsJson.get("uuid");
+        String uploadTitle = (String) paramsJson.get("uploadTitle");
         try {
             // 1. 服务器删除
-            int delCounts = imageService.deleteImageByUuid(uuid);
+            int delCounts = imageService.deleteImageByUploadTitle(uploadTitle);
             if (delCounts <= 0) {
-                logger.error(String.format("数据库删除 images 失败！images uuid: %s", uuid));
+                logger.error(String.format("服务器删除 images 失败！images uploadTitle: %s", uploadTitle));
                 map.put("result", ResultCode.FAIL.getCode());
                 return map;
             } else {
-                logger.info(String.format("数据库删除 images 个数：%s", delCounts));
-                delResult = ResultCode.SUCCESS.getCode();
+                logger.info(String.format("服务器删除 images 成功个数：%s", delCounts));
             }
 
             // 2. TODO HDFS 删除
-//            CommonResponse response = imageService.deleteImageFromHdfs(uuid);
-//            delResult = response.getResult();
-
+            Boolean delFlag = imageService.deleteImageFromHdfs(uploadTitle);
+            if (Boolean.TRUE.equals(delFlag)) {
+                logger.info(String.format("Hadoop 删除 images 成功个数：%s", delCounts));
+            } else {
+                logger.error(String.format("Hadoop 删除 images 失败！images uploadTitle: %s", uploadTitle));
+                map.put("result", ResultCode.FAIL.getCode());
+                return map;
+            }
         } catch (Exception e) {
             logger.error(ResultCode.EXCEPTION.getDesc(), e);
         }
-        map.put("result", delResult);
+        map.put("result", ResultCode.SUCCESS.getCode());
         return map;
     }
 
 
+
+    /**
+     * @Description: 修改图像
+     * @Date: 2019/12/9 15:21
+     * @param: request
+     * @ReturnType: java.util.Map<java.lang.String,java.lang.Object>
+     **/
     @RequestMapping(value = "/modifyImage", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> modify(HttpServletRequest request) throws Exception {
@@ -98,14 +122,13 @@ public class ImagesController {
             int modCounts = imageService.updateImage(paramsJson);
             // 修改失败
             if (modCounts <= 0) {
-                logger.error(String.format("服务器修改 images 失败！images: %s", paramsJson.toJSONString()));
+                logger.error(String.format("修改 images 失败！images: %s", paramsJson.toJSONString()));
                 map.put("result", ResultCode.FAIL.getCode());
                 return map;
             } else {
-                logger.info(String.format("服务器修改 images 个数：%s", modCounts));
+                logger.info(String.format("修改 images 个数：%s", modCounts));
                 delResult = ResultCode.SUCCESS.getCode();
             }
-
         } catch (Exception e) {
             logger.error("修改图像信息异常！", e);
         }
@@ -127,7 +150,7 @@ public class ImagesController {
 
 
     /**
-     * @Description: 上传图像
+     * @Description: 上传图像（服务器 + HDFS）
      * @Date: 2019/11/8 19:06
      * @Params:
      * @ReturnType:
@@ -180,7 +203,7 @@ public class ImagesController {
      * @Date: 2019/12/8 11:55
      * @param: request
      * @param: response
-     * @ReturnType: java.util.Map<java.lang.String, java.lang.Object>
+     * @ReturnType: java.util.Map<java.lang.String,java.lang.Object>
      **/
     @RequestMapping(value = "/downloadImage")
     public void downloadImage(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -234,13 +257,18 @@ public class ImagesController {
                 outputStream.flush();
 
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             logger.error("图像下载异常！", e);
-        }finally {
-            inputStream.close();
-            outputStream.close();
+        } finally {
+            if (inputStream != null) {
+                inputStream.close();
+            }
+            if (outputStream != null) {
+                outputStream.close();
+            }
         }
     }
+
 }
 
 

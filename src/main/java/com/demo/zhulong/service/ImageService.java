@@ -66,48 +66,32 @@ public class ImageService {
     /**
      * @Description: 数据库删除图像
      */
-    public int deleteImageByUuid(String uuid) throws Exception {
-        return imagesMapper.deleteImgByUuid(uuid);
+    public int deleteImageByUploadTitle(String uploadTitle) throws Exception {
+        return imagesMapper.deleteImgByUploadTitle(uploadTitle);
     }
+
 
     /**
      * @Description: 从 HDFS 中删除
      */
-    public CommonResponse deleteImageFromHdfs(String uuid) throws Exception {
-        logger.info("delete file from HDFS begin...");
-        Map<String, Object> map = new HashMap<>();
-        CommonResponse response = new CommonResponse();
-
-        String saveFileName = HdfsConfig.getMasterAddress() + uuid;
-        logger.info(String.format("HDFS 中待删除文件[%s]", saveFileName));
+    public Boolean deleteImageFromHdfs(String uploadTitle) throws Exception {
+        String filePath = HdfsConfig.getMasterAddress() + uploadTitle;
+        logger.info(String.format("HDFS 中待删除文件[%s]", filePath));
         try {
             Configuration configuration = new Configuration();
-            FileSystem fileSystem = FileSystem.get(URI.create(saveFileName), configuration);
-            Path saveFilePath = new Path(saveFileName);
+            FileSystem fileSystem = FileSystem.get(URI.create(filePath), configuration, HdfsConfig.getHdfsUser());
+            Path saveFilePath = new Path(filePath);
             if (!fileSystem.exists(saveFilePath)) {
-                logger.error(String.format("HDFS 中文件路径不存在！saveFileName[%s]", saveFileName));
-                response.setMsg("HDFS 中文件路径不存在");
-                response.setResult(ResultCode.FAIL.getCode());
-                return response;
+                logger.error(String.format("HDFS 中文件路径不存在！filePath:[%s]", filePath));
+                return false;
             }
             // 删除
-            boolean delRes = fileSystem.delete(saveFilePath, true);
-            if (delRes){
-                response.setMsg("文件删除成功");
-                response.setResult(ResultCode.FAIL.getCode());
-            }else {
-                logger.error(String.format("文件删除失败！saveFileName[%s]", saveFileName));
-                response.setMsg("文件删除失败");
-                response.setResult(ResultCode.FAIL.getCode());
-            }
+            return fileSystem.delete(saveFilePath, true);
         } catch (Exception e) {
-            logger.error(String.format("HDFS 中删除文件异常！saveFileName[%s]", saveFileName), e);
-            response.setMsg("文件删除异常");
-            response.setResult(ResultCode.EXCEPTION.getCode());
+            logger.error(String.format("HDFS 中删除文件异常！uploadTitle:[%s]", uploadTitle), e);
         }
-        return response;
+        return false;
     }
-
 
 
     /**

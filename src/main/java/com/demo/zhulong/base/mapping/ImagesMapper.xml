@@ -57,8 +57,8 @@
         where UUID = #{uuid,jdbcType=VARCHAR}
     </update>
 
-    <delete id="deleteImgByUuid" parameterType="java.lang.String" >
-        DELETE FROM images WHERE UUID = #{uuid, jdbcType=VARCHAR}
+    <delete id="deleteImgByUploadTitle" parameterType="java.lang.String" >
+        DELETE FROM images WHERE UPLOAD_TITLE = #{uploadTitle, jdbcType=VARCHAR}
     </delete>
 
 </mapper>
