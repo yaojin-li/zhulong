@@ -107,7 +107,7 @@ public class FileUtils {
 
     /**
      * @Description: 删除目录（文件夹）以及目录下的文件
-     * @Date: 2019/12/3 21:17
+     * @Date: 2019/12/7 21:17
      * @param: sPath 待删除目录
      * @ReturnType: void
      **/
@@ -142,7 +142,7 @@ public class FileUtils {
 
     /**
      * @Description: 检查文件，获取上传信息
-     * @Date: 2019/12/3 20:49
+     * @Date: 2019/12/7 20:49
      * @param: fileName 文件名
      * @param: request http 请求
      * @ReturnType: Map<String       ,               Object>
@@ -176,7 +176,8 @@ public class FileUtils {
         resMap.put("uploader", request.getParameter("uploader"));
         resMap.put("remark", request.getParameter("remark"));
         resMap.put("size", fileName.getSize());
-        resMap.put("position", HdfsConfig.getHdfsPath());
+        resMap.put("hdfsPosition", HdfsConfig.getHdfsPath());
+        resMap.put("serverPosition", request.getParameter("serverPosition"));
 
         Map<String, String> map = FileRelated.makeFileName(title);
         resMap.put("uuid", map.get("uuid"));
@@ -187,7 +188,7 @@ public class FileUtils {
 
     /**
      * @Description: 将本地缓存文件上传到 HDFS
-     * @Date: 2019/12/3 19:52
+     * @Date: 2019/12/7 19:52
      * @param: realSavePath 服务器缓存文件的路径
      * @param: saveFileName 上传文件名称
      * @ReturnType: boolean
@@ -282,7 +283,7 @@ public class FileUtils {
 
     /**
      * @Description: 本地缓存
-     * @Date: 2019/12/4 11:02
+     * @Date: 2019/12/7 11:02
      * @param: file 缓存文件
      * @param: title 缓存文件名称
      * @ReturnType: 缓存文件绝对路径
@@ -295,6 +296,10 @@ public class FileUtils {
             logger.error("文件缓存异常", e);
         }
         return dest.getAbsolutePath();
+    }
+
+    public static void yasuo(){
+
     }
 
 }

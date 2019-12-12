@@ -35,10 +35,12 @@
                                         <thead>
                                         <tr>
                                             <th>Row</th>
+                                            <th>img</th>
                                             <th>Title</th>
                                             <th>Tpye</th>
                                             <th>Size</th>
-                                            <th>Position</th>
+                                            <th>HdfsPosition</th>
+                                            <th>ServerPosition</th>
                                             <th>UUID</th>
                                             <th>CreateTime</th>
                                             <th>UpdateTime</th>
@@ -50,15 +52,21 @@
 
                                         <tbody>
                                         <tr th:each="image:${images}">
-                                            <td th:text="${image.id}"></td>
+                                            <td></td>
+                                            <td id="preview">
+                                                <a class="fancybox" th:href="${image.serverPosition}">
+                                                    <img th:src="${image.serverPosition}" alt="缩略图"/>
+                                                </a>
+                                            </td>
                                             <td th:text="${image.title}"></td>
                                             <td th:text="${image.type}"></td>
                                             <td th:text="${image.size}"></td>
-                                            <td th:text="${image.position}"></td>
+                                            <td th:text="${image.hdfsPosition}"></td>
+                                            <td th:text="${image.serverPosition}"></td>
                                             <td th:text="${image.uuid}"></td>
-                                            <td th:text="${#dates.format(image.createTime, 'yyyy-MM-dd')}">
+                                            <td th:text="${#dates.format(image.createTime, 'yyyy-MM-dd HH:mm:ss')}">
                                             </td>
-                                            <td th:text="${#dates.format(image.updateTime, 'yyyy-MM-dd')}">
+                                            <td th:text="${#dates.format(image.updateTime, 'yyyy-MM-dd HH:mm:ss')}">
                                             </td>
                                             <td th:text="${image.uploader}"></td>
                                             <td th:text="${image.uploadTitle}"></td>
@@ -133,6 +141,16 @@
     <!-- ############################## 公共部分js ############################## -->
     <span th:replace="/base/commons.html::base_js"></span>
 
+
+    <!-- 图像预览begin -->
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".fancybox").fancybox();
+        });
+    </script>
+    <!-- 图像预览end -->
+
+
     <script type="text/javascript" th:inline="javascript">
         // 修改表格第一列序号从1自增
         $(function () {
@@ -163,6 +181,7 @@
         function downloadInfo(uploadTitle) {
             window.location.href = "/downloadImage?uploadTitle=" + uploadTitle;
         }
+
 
         function modInfo(obj) {
             var info = obj.split("|");

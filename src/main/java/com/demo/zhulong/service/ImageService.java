@@ -54,7 +54,8 @@ public class ImageService {
 	    image.setTitle((String) imageInfo.get("title"));
 	    image.setType((String) imageInfo.get("type"));
         image.setSize((Long) imageInfo.get("size"));
-        image.setPosition((String) imageInfo.get("position"));
+        image.setHdfsPosition((String) imageInfo.get("hdfsPosition"));
+        image.setServerPosition((String) imageInfo.get("serverPosition"));
         image.setUuid((String) imageInfo.get("uuid"));
         image.setUploader((String) imageInfo.get("uploader"));
         image.setRemark((String) imageInfo.get("remark"));

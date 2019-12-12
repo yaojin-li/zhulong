@@ -15,23 +15,25 @@ public class Images implements Serializable {
 
     private Long size;
 
-    private String position;
+    private String serverPosition;
+
+    private String hdfsPosition;
 
     private String uuid;
 
-    private Date createTime;
-
-    private Date updateTime;
+    private String uploadTitle;
 
     private String uploader;
 
     private String remark;
 
+    private Date createTime;
+
+    private Date updateTime;
+
     private String note1;
 
     private String note2;
-
-    private String uploadTitle;
 
     public Integer getId() {
         return id;
@@ -65,12 +67,20 @@ public class Images implements Serializable {
         this.size = size;
     }
 
-    public String getPosition() {
-        return position;
+    public String getServerPosition() {
+        return serverPosition;
     }
 
-    public void setPosition(String position) {
-        this.position = position == null ? null : position.trim();
+    public void setServerPosition(String serverPosition) {
+        this.serverPosition = serverPosition == null ? null : serverPosition.trim();
+    }
+
+    public String getHdfsPosition() {
+        return hdfsPosition;
+    }
+
+    public void setHdfsPosition(String hdfsPosition) {
+        this.hdfsPosition = hdfsPosition == null ? null : hdfsPosition.trim();
     }
 
     public String getUuid() {
@@ -81,20 +91,12 @@ public class Images implements Serializable {
         this.uuid = uuid == null ? null : uuid.trim();
     }
 
-    public Date getCreateTime() {
-        return createTime;
+    public String getUploadTitle() {
+        return uploadTitle;
     }
 
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
+    public void setUploadTitle(String uploadTitle) {
+        this.uploadTitle = uploadTitle == null ? null : uploadTitle.trim();
     }
 
     public String getUploader() {
@@ -113,6 +115,22 @@ public class Images implements Serializable {
         this.remark = remark == null ? null : remark.trim();
     }
 
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
+
     public String getNote1() {
         return note1;
     }
@@ -127,13 +145,5 @@ public class Images implements Serializable {
 
     public void setNote2(String note2) {
         this.note2 = note2 == null ? null : note2.trim();
-    }
-
-    public String getUploadTitle() {
-        return uploadTitle;
-    }
-
-    public void setUploadTitle(String uploadTitle) {
-        this.uploadTitle = uploadTitle == null ? null : uploadTitle.trim();
     }
 }

@@ -1,9 +1,7 @@
 package com.demo.zhulong.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.demo.zhulong.base.beans.Images;
-import com.demo.zhulong.common.CommonResponse;
 import com.demo.zhulong.common.enums.ResultCode;
 import com.demo.zhulong.config.HdfsConfig;
 import com.demo.zhulong.service.ImageService;
@@ -21,8 +19,11 @@ import org.springframework.web.multipart.MultipartFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URI;
 import java.net.URLEncoder;
@@ -66,7 +67,7 @@ public class ImagesController {
      * @Description: 删除图像（服务器 + HDFS）
      * @Date: 2019/12/9 15:49
      * @param: request
-     * @ReturnType: java.util.Map<java.lang.String,java.lang.Object>
+     * @ReturnType: java.util.Map<java.lang.String , java.lang.Object>
      **/
     @RequestMapping(value = "/deleteImage", method = RequestMethod.POST)
     @ResponseBody
@@ -103,12 +104,11 @@ public class ImagesController {
     }
 
 
-
     /**
      * @Description: 修改图像
      * @Date: 2019/12/9 15:21
      * @param: request
-     * @ReturnType: java.util.Map<java.lang.String,java.lang.Object>
+     * @ReturnType: java.util.Map<java.lang.String , java.lang.Object>
      **/
     @RequestMapping(value = "/modifyImage", method = RequestMethod.POST)
     @ResponseBody
@@ -186,9 +186,6 @@ public class ImagesController {
                 logger.info("上传图像，数据信息插入数据库成功！");
             }
 
-            // 5. 清除本地缓存文件
-//            FileUtils.deleteDirectory(absolutePath);
-
             model.addAttribute("uploadResult", ResultCode.SUCCESS.getCode());
         } catch (Exception e) {
             logger.error("上传图像异常！", e);
@@ -203,7 +200,7 @@ public class ImagesController {
      * @Date: 2019/12/8 11:55
      * @param: request
      * @param: response
-     * @ReturnType: java.util.Map<java.lang.String,java.lang.Object>
+     * @ReturnType: java.util.Map<java.lang.String , java.lang.Object>
      **/
     @RequestMapping(value = "/downloadImage")
     public void downloadImage(HttpServletRequest request, HttpServletResponse response) throws Exception {

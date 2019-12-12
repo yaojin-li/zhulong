@@ -7,25 +7,25 @@ public class Images {
 
     private String title;
 
-    private String newTitle;
-
     private String type;
 
-    private Integer size;
+    private Long size;
 
-    private String position;
+    private String serverPosition;
+
+    private String hdfsPosition;
 
     private String uuid;
+
+    private String uploadTitle;
+
+    private String uploader;
+
+    private String remark;
 
     private Date createTime;
 
     private Date updateTime;
-
-    private String uploader;
-
-    private String description;
-
-    private String remark;
 
     private String note1;
 
@@ -47,14 +47,6 @@ public class Images {
         this.title = title == null ? null : title.trim();
     }
 
-    public String getNewTitle() {
-        return newTitle;
-    }
-
-    public void setNewTitle(String newTitle) {
-        this.newTitle = newTitle == null ? null : newTitle.trim();
-    }
-
     public String getType() {
         return type;
     }
@@ -63,20 +55,28 @@ public class Images {
         this.type = type == null ? null : type.trim();
     }
 
-    public Integer getSize() {
+    public Long getSize() {
         return size;
     }
 
-    public void setSize(Integer size) {
+    public void setSize(Long size) {
         this.size = size;
     }
 
-    public String getPosition() {
-        return position;
+    public String getServerPosition() {
+        return serverPosition;
     }
 
-    public void setPosition(String position) {
-        this.position = position == null ? null : position.trim();
+    public void setServerPosition(String serverPosition) {
+        this.serverPosition = serverPosition == null ? null : serverPosition.trim();
+    }
+
+    public String getHdfsPosition() {
+        return hdfsPosition;
+    }
+
+    public void setHdfsPosition(String hdfsPosition) {
+        this.hdfsPosition = hdfsPosition == null ? null : hdfsPosition.trim();
     }
 
     public String getUuid() {
@@ -85,6 +85,30 @@ public class Images {
 
     public void setUuid(String uuid) {
         this.uuid = uuid == null ? null : uuid.trim();
+    }
+
+    public String getUploadTitle() {
+        return uploadTitle;
+    }
+
+    public void setUploadTitle(String uploadTitle) {
+        this.uploadTitle = uploadTitle == null ? null : uploadTitle.trim();
+    }
+
+    public String getUploader() {
+        return uploader;
+    }
+
+    public void setUploader(String uploader) {
+        this.uploader = uploader == null ? null : uploader.trim();
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark == null ? null : remark.trim();
     }
 
     public Date getCreateTime() {
@@ -101,30 +125,6 @@ public class Images {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
-    }
-
-    public String getUploader() {
-        return uploader;
-    }
-
-    public void setUploader(String uploader) {
-        this.uploader = uploader == null ? null : uploader.trim();
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description == null ? null : description.trim();
-    }
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark == null ? null : remark.trim();
     }
 
     public String getNote1() {
