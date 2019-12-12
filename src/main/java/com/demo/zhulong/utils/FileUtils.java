@@ -6,6 +6,8 @@ import com.demo.zhulong.common.enums.DocEnum;
 import com.demo.zhulong.common.enums.ImageEnum;
 import com.demo.zhulong.common.enums.VideoEnum;
 import com.demo.zhulong.config.HdfsConfig;
+import net.coobird.thumbnailator.Thumbnails;
+import org.apache.commons.lang3.EnumUtils;
 import org.apache.directory.api.util.Strings;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
@@ -36,7 +38,7 @@ import java.util.*;
 public class FileUtils {
     public static final Logger logger = LoggerFactory.getLogger(FileUtils.class);
 
-    private static final String ROOT_PATH = "F://test";
+    private static final String ROOT_PATH = "E:/zhulong/src/main/resources/static/upload/";
 
     private static final String UPLOAD_HDFS_ADDRESS = HdfsConfig.getMasterAddress();
 
@@ -65,7 +67,7 @@ public class FileUtils {
             fileTypes.add(videoEnum.toString());
         }
 
-        if (fileTypes.contains(type)) {
+        if (fileTypes.contains(type.toUpperCase())) {
             return true;
         } else {
             logger.error(String.format("未包含的媒体类型: %s", type));
@@ -140,12 +142,13 @@ public class FileUtils {
         }
     }
 
+
     /**
      * @Description: 检查文件，获取上传信息
      * @Date: 2019/12/7 20:49
      * @param: fileName 文件名
      * @param: request http 请求
-     * @ReturnType: Map<String       ,               Object>
+     * @Return: 返回文件上传信息
      **/
     public static Map<String, Object> getUplodInfo(MultipartFile fileName, HttpServletRequest request) throws Exception {
         Map<String, Object> resMap = new HashMap<>();
@@ -170,6 +173,8 @@ public class FileUtils {
             throw new NoSuchElementException(String.format("文件类型[%s]异常", type));
         }
 
+        // 根据文件类型选择上传目录
+
         //文件相关信息 + 输入信息
         resMap.put("title", title);
         resMap.put("type", type);
@@ -177,14 +182,30 @@ public class FileUtils {
         resMap.put("remark", request.getParameter("remark"));
         resMap.put("size", fileName.getSize());
         resMap.put("hdfsPosition", HdfsConfig.getHdfsPath());
-        resMap.put("serverPosition", request.getParameter("serverPosition"));
 
         Map<String, String> map = FileRelated.makeFileName(title);
         resMap.put("uuid", map.get("uuid"));
         resMap.put("uploadTitle", map.get("uploadTitle"));
+        resMap.put("serverPosition", chooseUploadDic(type) + map.get("uploadTitle"));
         return resMap;
     }
 
+
+    /**
+     * @Description: 根据文件类型选择文件上传路径
+     * @Date: 2019/12/12 18:09
+     * @param: type 文件类型
+     * @Return: 文件上传路径
+     **/
+    public static String chooseUploadDic(String type) {
+        String serverPosition = null;
+        if (EnumUtils.isValidEnum(ImageEnum.class, type.toUpperCase())) {
+            serverPosition = "upload/images/";
+        } else if (EnumUtils.isValidEnum(VideoEnum.class, type.toUpperCase())) {
+            serverPosition = "upload/videos/";
+        }
+        return serverPosition;
+    }
 
     /**
      * @Description: 将本地缓存文件上传到 HDFS
@@ -210,7 +231,8 @@ public class FileUtils {
 
         // 创建输出流
         OutputStream outputStream = fileSystem.create(new Path(hdfsPosition), new Progressable() {
-            public void progress() {}
+            public void progress() {
+            }
         });
 
         try {
@@ -288,18 +310,57 @@ public class FileUtils {
      * @param: title 缓存文件名称
      * @ReturnType: 缓存文件绝对路径
      **/
-    public static String fileCache(MultipartFile file, String title) throws Exception {
-        File dest = new File(ROOT_PATH + File.separator + title);
+    public static String fileCache(MultipartFile file, String dic, Map<String, Object> fileInfo) throws Exception {
+        File dest = new File(ROOT_PATH + dic + File.separator + fileInfo.get("uploadTitle"));
         try {
             file.transferTo(dest);
+            compression((String) fileInfo.get("type"), dest);
         } catch (Exception e) {
             logger.error("文件缓存异常", e);
         }
         return dest.getAbsolutePath();
     }
 
-    public static void yasuo(){
 
+    /**
+     * @Description: 图像压缩
+     * @Date: 2019/12/12 18:06
+     * @param: imgFile 图像文件
+     **/
+    public static void imgCompression(File imgFile) {
+        try {
+            Thumbnails.of(imgFile)
+                    .size(100, 50)
+                    .toFile(imgFile);
+        } catch (Exception e) {
+            logger.error("图像压缩异常", e);
+        }
     }
+
+    public static void videoCompression(File imgFile) {
+        try {
+            // TODO LXJ
+        } catch (Exception e) {
+
+        }
+    }
+
+
+    /**
+     * @Description: 根据文件类型选择压缩
+     * @Date: 2019/12/12 18:05
+     * @param: type 文件类型
+     * @param: file 文件
+     **/
+    public static void compression(String type, File file) {
+        if (EnumUtils.isValidEnum(ImageEnum.class, type.toUpperCase())) {
+            imgCompression(file);
+        } else if (EnumUtils.isValidEnum(VideoEnum.class, type.toUpperCase())) {
+            videoCompression(file);
+        } else {
+            logger.error(String.format("压缩文件类型非图片或视频！type[%s]", type));
+        }
+    }
+
 
 }

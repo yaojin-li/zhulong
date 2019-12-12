@@ -32,11 +32,11 @@ public class FileTest {
 
     @Test
     public void compressFileStream() throws Exception {
-        InputStream inputStream = new FileInputStream("E:/test/test.png");
+        InputStream inputStream = new FileInputStream("E:\\zhulong\\src\\main\\resources\\static\\upload\\images\\e051b7de-be4d-4987-a439-c5f05dac377c_Capture001.png");
         Thumbnails.of(inputStream)
 //                .outputQuality(0.25)
-                .scale(0.25)
-//                .size(1366, 768)
-                .toFile("E:/test/1/test9999999.png");
+//                .scale(0.25)
+                .size(100, 50)
+                .toFile("E:\\zhulong\\src\\main\\resources\\static\\upload\\images\\e051b7de-be4d-4987-a439-c5f05dac377c_Capture001.png");
     }
 }

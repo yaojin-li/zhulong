@@ -188,20 +188,21 @@ CREATE TABLE `videos` (
   `ID` int(10) NOT NULL AUTO_INCREMENT COMMENT '视频ID',
   `TITLE` varchar(100) NOT NULL COMMENT '视频名称',
   `TYPE` varchar(10) NOT NULL COMMENT '视频类型',
-  `SIZE` bigint(100) NOT NULL COMMENT '视频大小',
-  `POSITION` varchar(100) DEFAULT NULL COMMENT 'HDFS 中的视频位置',
+  `SIZE` bigint(50) NOT NULL COMMENT '视频大小',
+  `SERVER_POSITION` varchar(100) DEFAULT NULL COMMENT '服务器中的视频位置',
+  `HDFS_POSITION` varchar(100) DEFAULT NULL COMMENT 'HDFS 中的视频位置',
   `UUID` varchar(100) NOT NULL COMMENT '视频唯一ID',
+  `UPLOAD_TITLE` varchar(100) NOT NULL COMMENT '文件的上传名称',
+  `UPLOADER` varchar(100) DEFAULT NULL COMMENT '视频上传者',
+  `REMARK` varchar(100) DEFAULT NULL COMMENT '视频备注',
   `CREATE_TIME` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
   `UPDATE_TIME` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `UPLOADER` varchar(100) DEFAULT NULL COMMENT '视频上传者',
-  `REMARK` varchar(100) DEFAULT NULL COMMENT '表备注',
   `NOTE1` varchar(100) DEFAULT NULL COMMENT '扩展字段1',
   `NOTE2` varchar(100) DEFAULT NULL COMMENT '扩展字段2',
-  `UPLOAD_TITLE` varchar(100) NOT NULL COMMENT '文件的上传名称',
   PRIMARY KEY (`ID`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='视频相关';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='视频相关';
 
 -- ----------------------------
 -- Records of videos
 -- ----------------------------
-INSERT INTO `videos` VALUES ('1', '测试.mp4', 'mp4', '342123432', '/user/hadoop/input/', 'c30a90eb-0acc-4b73-935d-ec52976e45fb', '2019-12-04 17:31:45', '2019-12-04 17:31:45', '上传者', '555511', null, null, 'c30a90eb-0acc-4b73-935d-ec52976e45fb_2.PNG');
+INSERT INTO `videos` VALUES ('1', 'test.mp4', 'mp4', '3451273421', 'videos/upload/c30a90eb-0acc-4b73-935d-ec52976e45fb_2.PNG', '/user/lxj/input/testfile2/', 'c30a90eb-0acc-4b73-935d-ec52976e45fb', 'c30a90eb-0acc-4b73-935d-ec52976e45fb_2.PNG', '上传者a26444466666666666', '555511', '2019-12-10 11:32:58', '2019-12-10 11:32:58', null, null);

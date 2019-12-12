@@ -1,30 +1,30 @@
 package com.demo.zhulong.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.demo.zhulong.base.beans.Images;
+import com.demo.zhulong.base.beans.Videos;
 import com.demo.zhulong.common.enums.ResultCode;
 import com.demo.zhulong.config.HdfsConfig;
-import com.demo.zhulong.service.ImageService;
+import com.demo.zhulong.service.VideoService;
 import com.demo.zhulong.utils.FileUtils;
 import org.apache.directory.api.util.Strings;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.BufferedOutputStream;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.util.HashMap;
@@ -34,7 +34,7 @@ import java.util.Objects;
 
 /**
  * @Description: --------------------------------------
- * @ClassName: ImagesController.java
+ * @ClassName: VideosController.java
  * @Date: 2019/9/28 23:16
  * @SoftWare: IntelliJ IDEA
  * --------------------------------------
@@ -42,34 +42,34 @@ import java.util.Objects;
  * @Contact: lixj_zj@163.com
  **/
 @Controller
-public class ImagesController {
-    private static final Logger logger = LoggerFactory.getLogger(ImagesController.class);
+public class VideosController {
+    private static final Logger logger = LoggerFactory.getLogger(VideosController.class);
 
     @Autowired
-    public ImageService imageService;
+    public VideoService videoService;
 
 
     /**
-     * @Description: 查询图像
+     * @Description: 查询视频
      * @Date: 2019/12/9 15:21
      * @param: model
      * @ReturnType: java.lang.String
      **/
-    @RequestMapping(value = "/queryImage")
+    @RequestMapping(value = "/queryVideo")
     public String query(Model model) throws Exception {
-        List<Images> imageList = imageService.selectAll();
-        model.addAttribute("images", imageList);
-        return "images";
+        List<Videos> videoList = videoService.selectAll();
+        model.addAttribute("videos", videoList);
+        return "videos";
     }
 
 
     /**
-     * @Description: 删除图像（服务器 + HDFS）
+     * @Description: 删除视频（服务器 + HDFS）
      * @Date: 2019/12/9 15:49
      * @param: request
      * @ReturnType: java.util.Map<java.lang.String , java.lang.Object>
      **/
-    @RequestMapping(value = "/deleteImage", method = RequestMethod.POST)
+    @RequestMapping(value = "/deleteVideos", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> delete(HttpServletRequest request) throws Exception {
         Map<String, Object> map = new HashMap<>();
@@ -78,24 +78,24 @@ public class ImagesController {
         String uploadTitle = (String) paramsJson.get("uploadTitle");
         try {
             // 1. 服务器删除
-            int delCounts = imageService.deleteImageByUploadTitle(uploadTitle);
+            int delCounts = videoService.deleteVideoByUploadTitle(uploadTitle);
             if (delCounts <= 0) {
-                logger.error(String.format("服务器删除 images 失败！images uploadTitle: %s", uploadTitle));
+                logger.error(String.format("服务器删除 videos 失败！videos uploadTitle: %s", uploadTitle));
                 map.put("result", ResultCode.FAIL.getCode());
                 return map;
             } else {
-                logger.info(String.format("服务器删除 images 成功个数：%s", delCounts));
+                logger.info(String.format("服务器删除 videos 成功个数：%s", delCounts));
             }
 
-            // 2. TODO HDFS 删除
-            Boolean delFlag = imageService.deleteImageFromHdfs(uploadTitle);
-            if (Boolean.TRUE.equals(delFlag)) {
-                logger.info(String.format("Hadoop 删除 images 成功个数：%s", delCounts));
-            } else {
-                logger.error(String.format("Hadoop 删除 images 失败！images uploadTitle: %s", uploadTitle));
-                map.put("result", ResultCode.FAIL.getCode());
-                return map;
-            }
+//            // 2. TODO HDFS 删除
+//            Boolean delFlag = videoService.deleteVideoFromHdfs(uploadTitle);
+//            if (Boolean.TRUE.equals(delFlag)) {
+//                logger.info(String.format("Hadoop 删除 videos 成功个数：%s", delCounts));
+//            } else {
+//                logger.error(String.format("Hadoop 删除 videos 失败！videos uploadTitle: %s", uploadTitle));
+//                map.put("result", ResultCode.FAIL.getCode());
+//                return map;
+//            }
         } catch (Exception e) {
             logger.error(ResultCode.EXCEPTION.getDesc(), e);
         }
@@ -105,12 +105,12 @@ public class ImagesController {
 
 
     /**
-     * @Description: 修改图像
+     * @Description: 修改视频
      * @Date: 2019/12/9 15:21
      * @param: request
      * @ReturnType: java.util.Map<java.lang.String , java.lang.Object>
      **/
-    @RequestMapping(value = "/modifyImage", method = RequestMethod.POST)
+    @RequestMapping(value = "/modifyVideo", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> modify(HttpServletRequest request) throws Exception {
         String params = request.getParameter("params");
@@ -119,18 +119,18 @@ public class ImagesController {
         String delResult = null;
         Map<String, Object> map = new HashMap<>();
         try {
-            int modCounts = imageService.updateImage(paramsJson);
+            int modCounts = videoService.updateVideo(paramsJson);
             // 修改失败
             if (modCounts <= 0) {
-                logger.error(String.format("修改 images 失败！images: %s", paramsJson.toJSONString()));
+                logger.error(String.format("修改 videos 失败！videos: %s", paramsJson.toJSONString()));
                 map.put("result", ResultCode.FAIL.getCode());
                 return map;
             } else {
-                logger.info(String.format("修改 images 个数：%s", modCounts));
+                logger.info(String.format("修改 videos 个数：%s", modCounts));
                 delResult = ResultCode.SUCCESS.getCode();
             }
         } catch (Exception e) {
-            logger.error("修改图像信息异常！", e);
+            logger.error("修改视频信息异常！", e);
         }
         map.put("result", delResult);
         return map;
@@ -138,29 +138,29 @@ public class ImagesController {
 
 
     /**
-     * @Description: 正常访问 图像上传页面
+     * @Description: 正常访问 视频上传页面
      * @Date: 2019/11/8 19:05
      * @Params:
      * @ReturnType:
      **/
-    @RequestMapping(value = "/uploadImage")
+    @RequestMapping(value = "/uploadVideo")
     public String uploadImagePage() {
-        return "/uploadImage";
+        return "/uploadVideo";
     }
 
 
     /**
-     * @Description: 上传图像（服务器 + HDFS）
+     * @Description: 上传视频（服务器 + HDFS）
      * @Date: 2019/11/8 19:06
      * @Params:
      * @ReturnType:
      **/
-    @RequestMapping(value = "/uploadImages")
-    public String upload(@RequestParam("fileName") MultipartFile file, HttpServletRequest request, Model model) throws Exception {
+    @RequestMapping(value = "/uploadVideos")
+    public String uploadVideos(@RequestParam("fileName") MultipartFile file, HttpServletRequest request, Model model) throws Exception {
         if (Objects.isNull(file) || file.isEmpty() || Strings.isEmpty(file.getOriginalFilename())) {
             logger.error("上传文件为空！");
             model.addAttribute("uploadResult", ResultCode.FAIL.getCode());
-            return "uploadImage";
+            return "uploadVideo";
         }
 
         // 1. 获取文件信息
@@ -168,9 +168,9 @@ public class ImagesController {
 
         try {
             // 2. 以上传文件的名称（加uuid）缓存文件
-            String absolutePath = FileUtils.fileCache(file, "images", fileInfo);
+            String absolutePath = FileUtils.fileCache(file, "videos", fileInfo);
 
-            // 3. 文件上传到 HDFS
+//            // 3. TODO LXJ 文件上传到 HDFS
 //            boolean uploadHdfsFlag = FileUtils.uploadToHdfs(absolutePath, (String) fileInfo.get("uploadTitle"));
 //            if (uploadHdfsFlag) {
 //                logger.info("上传 HDFS 成功");
@@ -179,16 +179,16 @@ public class ImagesController {
 //            }
 
             // 4. 数据信息插入数据库
-            int insertCount = imageService.insertImage(fileInfo);
+            int insertCount = videoService.insertVideo(fileInfo);
             if (insertCount <= 0) {
-                logger.error(String.format("上传图像，数据信息插入数据库失败！文件信息：[%s]", JSONObject.toJSON(fileInfo)));
+                logger.error(String.format("上传视频，数据信息插入数据库失败！文件信息：[%s]", JSONObject.toJSON(fileInfo)));
             } else {
-                logger.info("上传图像，数据信息插入数据库成功！");
+                logger.info("上传视频，数据信息插入数据库成功！");
             }
 
             model.addAttribute("uploadResult", ResultCode.SUCCESS.getCode());
         } catch (Exception e) {
-            logger.error("上传图像异常！", e);
+            logger.error("上传视频异常！", e);
             model.addAttribute("uploadResult", ResultCode.EXCEPTION.getCode());
         }
         return "uploadImage";
@@ -196,18 +196,18 @@ public class ImagesController {
 
 
     /**
-     * @Description: 下载图像
+     * @Description: 下载视频
      * @Date: 2019/12/8 11:55
      * @param: request
      * @param: response
      * @ReturnType: java.util.Map<java.lang.String , java.lang.Object>
      **/
-    @RequestMapping(value = "/downloadImage")
+    @RequestMapping(value = "/downloadVideo")
     public void downloadImage(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request.setCharacterEncoding("utf-8");
         // HDFS 中存储的文件名
         String fileName = request.getParameter("uploadTitle");
-        logger.info(String.format("download image is:[%s]", fileName));
+        logger.info(String.format("download video is:[%s]", fileName));
 
 
         FSDataInputStream inputStream = null;
@@ -255,7 +255,7 @@ public class ImagesController {
 
             }
         } catch (Exception e) {
-            logger.error("图像下载异常！", e);
+            logger.error("视频下载异常！", e);
         } finally {
             if (inputStream != null) {
                 inputStream.close();
@@ -265,9 +265,6 @@ public class ImagesController {
             }
         }
     }
-
-
-    // TODO LXJ 预览图像 优化成 从 Hadoop 中读取输出流
 
 }
 

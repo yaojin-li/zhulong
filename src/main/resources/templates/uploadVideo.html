@@ -23,7 +23,7 @@
                         <div id="page-wrapper">
                             <div class="row">
                                 <div class="col-lg-12">
-                                    <h4 class="page-header">上传图像</h4>
+                                    <h4 class="page-header">上传视频</h4>
                                 </div>
                             </div>
 
@@ -33,7 +33,7 @@
                             <div class="panel-body">
                                 <div class="row">
                                     <div class="col-lg-6">
-                                        <form enctype="multipart/form-data" action="/uploadImages" method="POST">
+                                        <form enctype="multipart/form-data" action="/uploadVideos" method="POST">
                                             <div class="form-group">
                                                 <label>上传用户</label>
                                                 <input class="form-control" type="text"
@@ -41,7 +41,7 @@
                                             </div>
                                             <div class="form-group">
                                                 <label>文件上传</label>
-                                                <input type="file" name="fileName" accept="image/*">
+                                                <input type="file" name="fileName" accept="video/*">
                                             </div>
                                             <div class="form-group">
                                                 <label>备注</label>
@@ -80,7 +80,7 @@
         if (typeof(uploadResult) === 'string') {
             if (uploadResult === '0000'){
                 alert("上传成功！");
-                window.location.href = 'uploadImage';
+                window.location.href = 'uploadVideo';
             } else {
                 alert("上传失败！");
             }
