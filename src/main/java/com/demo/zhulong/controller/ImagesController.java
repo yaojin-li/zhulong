@@ -1,7 +1,9 @@
 package com.demo.zhulong.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.demo.zhulong.base.beans.Images;
+import com.demo.zhulong.common.CommonResponse;
 import com.demo.zhulong.common.enums.ResultCode;
 import com.demo.zhulong.config.HdfsConfig;
 import com.demo.zhulong.service.ImageService;
@@ -185,6 +187,9 @@ public class ImagesController {
             } else {
                 logger.info("上传图像，数据信息插入数据库成功！");
             }
+
+            // 5. 清除本地缓存文件
+//            FileUtils.deleteDirectory(absolutePath);
 
             model.addAttribute("uploadResult", ResultCode.SUCCESS.getCode());
         } catch (Exception e) {

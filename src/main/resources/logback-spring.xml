@@ -59,7 +59,7 @@
         <level value="DEBUG" />
     </logger>
 
-    <root level="DEBUG">
+    <root level="INFO">
         <appender-ref ref="fileInfoLog" />
         <appender-ref ref="CONSOLE" />
     </root>
