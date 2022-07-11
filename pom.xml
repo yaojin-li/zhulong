@@ -23,7 +23,7 @@
         <vue.version>2.5.16</vue.version>
         <commons.lang3.version>3.3.2</commons.lang3.version>
         <mysql.connector.java.version>5.1.17</mysql.connector.java.version>
-        <spring.boot.version>2.1.8.RELEASE</spring.boot.version>
+        <spring.boot.version>2.2.11.RELEASE</spring.boot.version>
     </properties>
 
     <dependencies>
